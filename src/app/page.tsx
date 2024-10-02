@@ -1,101 +1,316 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import {
+  Person,
+  Revenue,
+  Expense,
+  CustomExpense,
+  Contribution,
+} from "../types/types";
+import PeopleManager from "@/components/PeopleManager";
+import IncomeManager from "@/components/IncomeManager";
+import ExpenseManager from "@/components/ExpenseManager";
+import ContributionManager from "@/components/ContributionManager";
+import DistributionMode from "@/components/DistributionMode";
+
+const Home: React.FC = () => {
+  const [people, setPeople] = useState<Person[]>([
+    { name: "Personne 1", percentage: 100, revenues: [] },
+  ]);
+
+  const [expenses, setExpenses] = useState<Expense[]>([
+    {
+      name: "Loyer",
+      amountMonthly: undefined,
+      amountYearly: undefined,
+      assignedTo: "foyer",
+      date: "",
+    },
+    {
+      name: "Eau",
+      amountMonthly: undefined,
+      amountYearly: undefined,
+      assignedTo: "foyer",
+      date: "",
+    },
+    {
+      name: "Électricité",
+      amountMonthly: undefined,
+      amountYearly: undefined,
+      assignedTo: "foyer",
+      date: "",
+    },
+    {
+      name: "Internet",
+      amountMonthly: undefined,
+      amountYearly: undefined,
+      assignedTo: "foyer",
+      date: "",
+    },
+  ]);
+
+  const [customExpense, setCustomExpense] = useState<CustomExpense>({
+    name: "",
+    amountMonthly: undefined,
+    amountYearly: undefined,
+    date: "",
+    assignedTo: "foyer",
+  });
+
+  const [newRevenue, setNewRevenue] = useState<Revenue>({
+    name: "",
+    amount: undefined,
+    assignedTo: "foyer",
+  });
+
+  const [distributionMode, setDistributionMode] = useState("equal");
+
+  const handleAddPerson = () => {
+    const totalPeople = people.length + 1;
+    const newPerson = {
+      name: `Personne ${totalPeople}`,
+      percentage: 100 / totalPeople,
+      revenues: [],
+    };
+
+    const updatedPeople = [...people, newPerson];
+    setPeople(updatedPeople);
+    recalculatePercentages(updatedPeople);
+  };
+
+  const handleRemovePerson = (index: number) => {
+    if (people.length > 1) {
+      const updatedPeople = people.filter((_, i) => i !== index);
+      setPeople(updatedPeople);
+      recalculatePercentages(updatedPeople);
+    }
+  };
+
+  const handlePercentageChange = (index: number, value: number) => {
+    const adjustedPeople = [...people];
+    adjustedPeople[index].percentage = value;
+
+    const remainingPercentage = 100 - value;
+
+    adjustedPeople.forEach((person, i) => {
+      if (i !== index) {
+        person.percentage = remainingPercentage / (adjustedPeople.length - 1);
+      }
+    });
+
+    setPeople(adjustedPeople);
+  };
+
+  const recalculatePercentages = (updatedPeople: Person[] = people) => {
+    const totalPercentage = 100 / updatedPeople.length;
+    setPeople(
+      updatedPeople.map((person) => ({
+        ...person,
+        percentage: totalPercentage,
+      }))
+    );
+  };
+
+  const handleAddOrUpdateRevenue = () => {
+    if (newRevenue.name && newRevenue.amount !== undefined) {
+      const assignedTo =
+        newRevenue.assignedTo === "foyer" ? "foyer" : newRevenue.assignedTo;
+
+      if (assignedTo === "foyer") {
+        // Ajouter le revenu du foyer à toutes les personnes une seule fois
+        const updatedPeople = people.map((person) => ({
+          ...person,
+          revenues: person.revenues.filter(
+            (rev) => rev.name !== newRevenue.name
+          ),
+        }));
+        updatedPeople[0].revenues.push({ ...newRevenue, assignedTo: "foyer" });
+        setPeople(updatedPeople);
+      } else {
+        // Ajouter ou mettre à jour le revenu pour la personne spécifique
+        setPeople((prevPeople) =>
+          prevPeople.map((person) => {
+            if (person.name === assignedTo) {
+              const existingRevenueIndex = person.revenues.findIndex(
+                (rev) => rev.name === newRevenue.name
+              );
+              if (existingRevenueIndex !== -1) {
+                // Mettre à jour le revenu existant
+                const updatedRevenues = [...person.revenues];
+                updatedRevenues[existingRevenueIndex] = { ...newRevenue };
+                return { ...person, revenues: updatedRevenues };
+              } else {
+                // Ajouter un nouveau revenu
+                return {
+                  ...person,
+                  revenues: [...person.revenues, { ...newRevenue }],
+                };
+              }
+            }
+            return person;
+          })
+        );
+      }
+
+      setNewRevenue({ name: "", amount: undefined, assignedTo: "foyer" });
+    }
+  };
+
+  const handleDeleteRevenue = (personIndex: number, revenueIndex: number) => {
+    setPeople(
+      people.map((person, i) => {
+        if (i === personIndex) {
+          return {
+            ...person,
+            revenues: person.revenues.filter(
+              (_, rIndex) => rIndex !== revenueIndex
+            ),
+          };
+        }
+        return person;
+      })
+    );
+  };
+
+  const handleExpenseChange = (
+    index: number,
+    field: keyof Expense,
+    value: string
+  ) => {
+    const updatedExpenses = expenses.map((expense, i) => {
+      if (i === index) {
+        return {
+          ...expense,
+          [field]: field.includes("amount") ? Number(value) : value,
+        };
+      }
+      return expense;
+    });
+    setExpenses(updatedExpenses);
+  };
+
+  const handleDeleteExpense = (index: number) => {
+    setExpenses(expenses.filter((_, i) => i !== index));
+  };
+
+  const handleCustomExpenseChange = (
+    field: keyof CustomExpense,
+    value: string
+  ) => {
+    setCustomExpense((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const calculateContributions = (): Contribution[] => {
+    const totalExpensesFoyer = expenses
+      .filter((expense) => expense.assignedTo === "foyer")
+      .reduce((total, expense) => total + (expense.amountMonthly || 0), 0);
+
+    const foyerRevenue = people[0].revenues
+      .filter((rev) => rev.assignedTo === "foyer")
+      .reduce((sum, rev) => sum + (rev.amount || 0), 0);
+
+    const totalRevenuesForAll =
+      people.reduce(
+        (sum, p) =>
+          sum +
+          p.revenues
+            .filter((r) => r.assignedTo !== "foyer")
+            .reduce((s, r) => s + (r.amount || 0), 0),
+        0
+      ) + foyerRevenue;
+
+    const foyerRevenuePerPerson = foyerRevenue / people.length;
+
+    return people.map((person) => {
+      const personalRevenue = person.revenues
+        .filter((rev) => rev.assignedTo !== "foyer")
+        .reduce((sum, rev) => sum + (rev.amount || 0), 0);
+
+      const totalPersonRevenue = personalRevenue + foyerRevenuePerPerson;
+
+      const totalExpensesPersonnelles = expenses
+        .filter((expense) => expense.assignedTo === person.name)
+        .reduce((total, expense) => total + (expense.amountMonthly || 0), 0);
+
+      let contributionFoyer: number;
+      let percentage: number;
+
+      switch (distributionMode) {
+        case "equal":
+          contributionFoyer = totalExpensesFoyer / people.length;
+          percentage = 100 / people.length;
+          break;
+        case "proportional":
+          contributionFoyer =
+            (totalPersonRevenue / totalRevenuesForAll) * totalExpensesFoyer;
+          percentage = (totalPersonRevenue / totalRevenuesForAll) * 100;
+          break;
+        case "percentage":
+          contributionFoyer = (person.percentage / 100) * totalExpensesFoyer;
+          percentage = person.percentage;
+          break;
+        default:
+          contributionFoyer = 0;
+          percentage = 0;
+      }
+
+      return {
+        name: person.name,
+        contributionFoyer: contributionFoyer.toFixed(2),
+        contributionPersonnelle: totalExpensesPersonnelles.toFixed(2),
+        percentage: percentage.toFixed(2),
+      };
+    });
+  };
+
+  const contributions = calculateContributions();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">
+        Gestion des Salaires et Dépenses
+      </h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <PeopleManager
+        people={people}
+        setPeople={setPeople}
+        handleAddPerson={handleAddPerson}
+        handleRemovePerson={handleRemovePerson}
+        handlePercentageChange={handlePercentageChange}
+      />
+
+      <DistributionMode
+        distributionMode={distributionMode}
+        setDistributionMode={setDistributionMode}
+      />
+
+      <IncomeManager
+        people={people}
+        setPeople={setPeople}
+        newRevenue={newRevenue}
+        setNewRevenue={setNewRevenue}
+        handleAddOrUpdateRevenue={handleAddOrUpdateRevenue}
+        handleDeleteRevenue={handleDeleteRevenue}
+      />
+
+      <ExpenseManager
+        expenses={expenses}
+        setExpenses={setExpenses}
+        customExpense={customExpense}
+        setCustomExpense={setCustomExpense}
+        people={people}
+        handleExpenseChange={handleExpenseChange}
+        handleDeleteExpense={handleDeleteExpense}
+        handleCustomExpenseChange={handleCustomExpenseChange}
+      />
+
+      <ContributionManager
+        contributions={contributions}
+        distributionMode={distributionMode}
+      />
     </div>
   );
-}
+};
+
+export default Home;
