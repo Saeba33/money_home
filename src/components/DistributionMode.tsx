@@ -1,48 +1,48 @@
 import React from "react";
+import { useAppContext } from "../contexts/AppContext";
+import { DistributionMode } from "../types/types";
+import { INFO_TEXTS } from "../constants/index";
+import SectionHeader from "./SectionHeader";
 
-interface DistributionModeProps {
-  distributionMode: string;
-  setDistributionMode: React.Dispatch<React.SetStateAction<string>>;
-}
+const DistributionModeComponent: React.FC = () => {
+  const { distributionMode, setDistributionMode, people } = useAppContext();
 
-const DistributionMode: React.FC<DistributionModeProps> = ({
-  distributionMode,
-  setDistributionMode,
-}) => {
+  if (people.length <= 1) {
+    return null;
+  }
+
+  const modes: DistributionMode[] = ["equal", "proportional", "percentage"];
+
   return (
-    <div>
-      <h2 className="text-xl mt-4">Modes de répartition</h2>
-      <div className="flex space-x-4 mb-4">
-        <label>
-          <input
-            type="radio"
-            value="equal"
-            checked={distributionMode === "equal"}
-            onChange={() => setDistributionMode("equal")}
-          />
-          Égal
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="proportional"
-            checked={distributionMode === "proportional"}
-            onChange={() => setDistributionMode("proportional")}
-          />
-          Proportionnel
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="percentage"
-            checked={distributionMode === "percentage"}
-            onChange={() => setDistributionMode("percentage")}
-          />
-          Pourcentage
-        </label>
+    <SectionHeader
+      title="Modes de répartition"
+      infoText={INFO_TEXTS.DISTRIBUTION_MODE}
+      defaultOpenedSection={true}
+    >
+      <div className="flex space-x-4">
+        {modes.map((mode) => (
+          <label key={mode} className="flex items-center">
+            <input
+              type="radio"
+              value={mode}
+              checked={distributionMode === mode}
+              onChange={() => setDistributionMode(mode)}
+              className="hidden"
+            />
+            <span
+              className={`px-3 py-1 rounded cursor-pointer ${
+                distributionMode === mode
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              {mode.charAt(0).toUpperCase() + mode.slice(1)}
+            </span>
+          </label>
+        ))}
       </div>
-    </div>
+    </SectionHeader>
   );
 };
 
-export default DistributionMode;
+export default DistributionModeComponent;

@@ -1,122 +1,147 @@
-import React from "react";
-import { Person, Revenue } from "../types/types";
+import React, { useMemo } from "react";
+import { useAppContext } from "../contexts/AppContext";
+import { INFO_TEXTS } from "../constants/index";
+import { FaRegTrashCan } from "react-icons/fa6";
+import SectionHeader from "./SectionHeader";
 
-interface IncomeManagerProps {
-  people: Person[];
-  setPeople: React.Dispatch<React.SetStateAction<Person[]>>;
-  newRevenue: Revenue;
-  setNewRevenue: React.Dispatch<React.SetStateAction<Revenue>>;
-  handleAddOrUpdateRevenue: () => void;
-  handleDeleteRevenue: (personIndex: number, revenueIndex: number) => void;
-}
+const IncomeManager: React.FC = () => {
+  const {
+    people,
+    setPeople,
+    newRevenue,
+    setNewRevenue,
+    addOrUpdateRevenue,
+    deleteRevenue,
+  } = useAppContext();
 
-const IncomeManager: React.FC<IncomeManagerProps> = ({
-  people,
-  setPeople,
-  newRevenue,
-  setNewRevenue,
-  handleAddOrUpdateRevenue,
-  handleDeleteRevenue,
-}) => {
-  return (
-    <div>
-      <h2 className="text-xl mt-4">Revenus</h2>
-      <div className="flex mb-2">
+  const RevenueItem = ({
+    revenue,
+    personIndex,
+    revenueIndex,
+    isNew = false,
+  }) => (
+    <div className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+      <div className="flex flex-wrap gap-2 items-center w-full">
         <input
           type="text"
-          placeholder="Source de revenu"
-          value={newRevenue.name}
-          onChange={(e) =>
-            setNewRevenue({ ...newRevenue, name: e.target.value })
-          }
-          className="border rounded p-2 text-black flex-1"
-        />
-        <input
-          type="number"
-          placeholder="Montant"
-          value={newRevenue.amount !== undefined ? newRevenue.amount : ""}
-          onChange={(e) =>
-            setNewRevenue({ ...newRevenue, amount: Number(e.target.value) })
-          }
-          className="border rounded p-2 text-black"
+          value={revenue.name}
+          onChange={(e) => {
+            const updatedValue = e.target.value;
+            isNew
+              ? setNewRevenue({ ...revenue, name: updatedValue })
+              : updateRevenue(personIndex, revenueIndex, {
+                  name: updatedValue,
+                });
+          }}
+          className="input flex-grow min-w-[200px]"
+          placeholder="Nom du revenu"
         />
         <select
-          value={newRevenue.assignedTo}
-          onChange={(e) =>
-            setNewRevenue({ ...newRevenue, assignedTo: e.target.value })
-          }
-          className="border p-2 rounded"
+          value={revenue.assignedTo}
+          onChange={(e) => {
+            const updatedValue = e.target.value;
+            isNew
+              ? setNewRevenue({ ...revenue, assignedTo: updatedValue })
+              : updateRevenue(personIndex, revenueIndex, {
+                  assignedTo: updatedValue,
+                });
+          }}
+          className="input w-full sm:w-auto"
         >
           <option value="foyer">Foyer</option>
-          {people.map((person, personIndex) => (
-            <option key={personIndex} value={person.name}>
+          {people.map((person, idx) => (
+            <option key={idx} value={person.name}>
               {person.name}
             </option>
           ))}
         </select>
-        <button
-          onClick={handleAddOrUpdateRevenue}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Ajouter un revenu
-        </button>
-      </div>
-
-      {people.flatMap((person, personIndex) =>
-        person.revenues.map((revenue, revenueIndex) => (
-          <div
-            key={`${personIndex}-${revenueIndex}`}
-            className="flex space-x-2 mb-2"
+        <input
+          type="number"
+          value={revenue.amount}
+          onChange={(e) => {
+            const updatedValue = Number(e.target.value);
+            isNew
+              ? setNewRevenue({ ...revenue, amount: updatedValue })
+              : updateRevenue(personIndex, revenueIndex, {
+                  amount: updatedValue,
+                });
+          }}
+          className="input w-full sm:w-32"
+          placeholder="Montant"
+        />
+        <input
+          type="text"
+          value={revenue.comments}
+          onChange={(e) => {
+            const updatedValue = e.target.value;
+            isNew
+              ? setNewRevenue({ ...revenue, comments: updatedValue })
+              : updateRevenue(personIndex, revenueIndex, {
+                  comments: updatedValue,
+                });
+          }}
+          className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
+          placeholder="Commentaires"
+        />
+        {isNew ? (
+          <button onClick={addOrUpdateRevenue} className="btn w-full sm:w-auto">
+            Ajouter
+          </button>
+        ) : (
+          <button
+            onClick={() => deleteRevenue(personIndex, revenueIndex)}
+            className="can w-full sm:w-auto"
           >
-            <input
-              type="text"
-              value={revenue.name}
-              onChange={(e) => {
-                const updatedPeople = [...people];
-                updatedPeople[personIndex].revenues[revenueIndex].name =
-                  e.target.value;
-                setPeople(updatedPeople);
-              }}
-              className="border rounded p-2 text-black flex-1"
-            />
-            <input
-              type="number"
-              value={revenue.amount !== undefined ? revenue.amount : ""}
-              onChange={(e) => {
-                const updatedPeople = [...people];
-                updatedPeople[personIndex].revenues[revenueIndex].amount =
-                  Number(e.target.value);
-                setPeople(updatedPeople);
-              }}
-              className="border rounded p-2 text-black"
-            />
-            <select
-              value={revenue.assignedTo}
-              onChange={(e) => {
-                const updatedPeople = [...people];
-                updatedPeople[personIndex].revenues[revenueIndex].assignedTo =
-                  e.target.value;
-                setPeople(updatedPeople);
-              }}
-              className="border p-2 rounded"
-            >
-              <option value="foyer">Foyer</option>
-              {people.map((person, idx) => (
-                <option key={idx} value={person.name}>
-                  {person.name}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => handleDeleteRevenue(personIndex, revenueIndex)}
-              className="text-red-500"
-            >
-              Supprimer
-            </button>
-          </div>
-        ))
-      )}
+            <FaRegTrashCan />
+          </button>
+        )}
+      </div>
     </div>
+  );
+
+  const updateRevenue = (personIndex, revenueIndex, updates) => {
+    const updatedPeople = [...people];
+    updatedPeople[personIndex].revenues[revenueIndex] = {
+      ...updatedPeople[personIndex].revenues[revenueIndex],
+      ...updates,
+    };
+    setPeople(updatedPeople);
+  };
+
+  const memoizedRevenueList = useMemo(() => {
+    return people.flatMap((person, personIndex) =>
+      person.revenues.map((revenue, revenueIndex) => (
+        <RevenueItem
+          key={`${personIndex}-${revenueIndex}`}
+          revenue={revenue}
+          personIndex={personIndex}
+          revenueIndex={revenueIndex}
+        />
+      ))
+    );
+  }, [people, deleteRevenue]);
+
+  const memoizedNewRevenueForm = useMemo(
+    () => (
+      <RevenueItem
+        revenue={newRevenue}
+        personIndex={-1}
+        revenueIndex={-1}
+        isNew={true}
+      />
+    ),
+    [newRevenue, setNewRevenue, addOrUpdateRevenue]
+  );
+
+  return (
+    <SectionHeader
+      title="Revenus"
+      infoText={INFO_TEXTS.INCOME}
+      defaultOpenedSection={true}
+    >
+      {memoizedNewRevenueForm}
+      {memoizedRevenueList}
+    </SectionHeader>
   );
 };
 

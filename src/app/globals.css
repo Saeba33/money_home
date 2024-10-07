@@ -2,3 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #0acb27;
+  --background-color: #f4f7fc;
+  --text-color: #333333;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.section-container {
+  @apply flex flex-col;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-header-base {
+  @apply flex items-center justify-between bg-blue-500 text-white p-3 cursor-pointer;
+}
+
+.section-header-open {
+  @apply section-header-base rounded-t-xl;
+}
+
+.section-header-closed {
+  @apply section-header-base rounded-xl;
+}
+
+.section-title {
+  @apply text-xl flex items-center;
+}
+
+.section-info {
+  @apply text-white text-2xl ml-3 ;
+}
+
+.section-content {
+  @apply p-3 bg-white rounded-b-xl;
+}
+
+.section-field {
+  @apply w-full flex gap-3 mb-2;
+}
+
+.can {
+  @apply text-red-500 text-xl ml-2;
+}
+
+.btn {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.input {
+  @apply border rounded text-black p-2 text-sm;
+}
+
