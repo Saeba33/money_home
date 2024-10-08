@@ -1,15 +1,15 @@
 import React from "react";
 import {
-  PieChart,
-  Pie,
   Cell,
+  Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from "recharts";
-import { INFO_TEXTS } from "../constants/index";
-import { useAppContext } from "../contexts/AppContext";
-import SectionHeader from "./SectionHeader";
+import { INFO_TEXTS } from "@/constants/index";
+import { useAppContext } from "@/contexts/AppContext";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const COLORS = [
   "#0088FE",

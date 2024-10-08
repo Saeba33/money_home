@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Person } from "../types/types";
-import { INITIAL_PEOPLE } from "../constants";
+import { Person } from "@/types/types";
+import { INITIAL_PEOPLE } from "@/constants";
 
 export const usePeople = () => {
   const [people, setPeople] = useState<Person[]>(INITIAL_PEOPLE);

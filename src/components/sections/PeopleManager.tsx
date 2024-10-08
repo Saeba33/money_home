@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import { useAppContext } from "../contexts/AppContext";
-import { INFO_TEXTS } from "../constants/index";
 import { FaRegTrashCan } from "react-icons/fa6";
-import SectionHeader from "./SectionHeader";
+import { INFO_TEXTS } from "@/constants/index";
+import { useAppContext } from "@/contexts/AppContext";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const PeopleManager: React.FC = () => {
   const {

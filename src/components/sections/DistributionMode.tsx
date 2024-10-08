@@ -1,8 +1,8 @@
 import React from "react";
-import { useAppContext } from "../contexts/AppContext";
-import { DistributionMode } from "../types/types";
-import { INFO_TEXTS } from "../constants/index";
-import SectionHeader from "./SectionHeader";
+import { INFO_TEXTS } from "@/constants/index";
+import { useAppContext } from "@/contexts/AppContext";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { DistributionMode } from "@/types/types";
 
 const DistributionModeComponent: React.FC = () => {
   const { distributionMode, setDistributionMode, people } = useAppContext();
@@ -16,7 +16,7 @@ const DistributionModeComponent: React.FC = () => {
   return (
     <SectionHeader
       title="Modes de répartition"
-      infoText={INFO_TEXTS.DISTRIBUTION_MODE}
+      infoText={INFO_TEXTS.DISTRIBUTION}
       defaultOpenedSection={true}
     >
       <div className="flex space-x-4">

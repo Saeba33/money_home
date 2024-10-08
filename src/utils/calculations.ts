@@ -2,7 +2,7 @@ import { Expense, Person, Revenue } from "../types/types";
 
 export const calculateTotalExpenses = (expenses: Expense[]): number => {
   return expenses.reduce(
-    (total, expense) => total + (expense.amountMonthly || 0),
+    (total, expense) => total + (expense.amount || 0),
     0
   );
 };

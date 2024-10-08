@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { AppContextType } from "../types/types";
-import { usePeople } from "../hooks/usePeople";
-import { useExpenses } from "../hooks/useExpenses";
-import { useSavings } from "../hooks/useSavings";
-import { useDistributionMode } from "../hooks/useDistributionMode";
-import { useContributions } from "../hooks/useContributions";
-import { useRevenues } from "../hooks/useRevenues"; // Assurez-vous d'avoir ce hook
+import { AppContextType } from "@/types/types";
+import { usePeople } from "@/hooks/usePeople";
+import { useExpenses } from "@/hooks/useExpenses";
+import { useSavings } from "@/hooks/useSavings";
+import { useDistributionMode } from "@/hooks/useDistributionMode";
+import { useContributions } from "@/hooks/useContributions";
+import { useRevenues } from "@/hooks/useRevenues";
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -16,12 +16,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const expensesHook = useExpenses();
   const savingsHook = useSavings();
   const distributionModeHook = useDistributionMode();
-  const revenuesHook = useRevenues(peopleHook.people, peopleHook.setPeople); // Ajoutez ceci
+  const revenuesHook = useRevenues();
 
   const contributionsData = useContributions(
     peopleHook.people,
     expensesHook.expenses,
     savingsHook.savings,
+    revenuesHook.revenues,
     distributionModeHook.distributionMode
   );
 
@@ -31,7 +32,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       ...expensesHook,
       ...savingsHook,
       ...distributionModeHook,
-      ...revenuesHook, // Ajoutez ceci
+      ...revenuesHook,
       contributions: contributionsData,
     }),
     [

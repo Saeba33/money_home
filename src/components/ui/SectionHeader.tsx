@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { BsInfoSquareFill } from "react-icons/bs";
-import InfoPopup from "./InfoPopup";
-import { SectionHeaderProps } from "../types/types";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { SectionHeaderProps } from "@/types/types";
+import InfoPopup from "@/components/ui/InfoPopup";
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,

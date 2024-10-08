@@ -1,7 +1,8 @@
-import React from "react";
 import jsPDF from "jspdf";
-import { useAppContext } from "../contexts/AppContext";
+import React from "react";
 import { FaFileExport } from "react-icons/fa";
+import { useAppContext } from "@/contexts/AppContext";
+import { Contribution } from "@/types/types";
 
 const ExportButton: React.FC = () => {
   const {
@@ -15,7 +16,7 @@ const ExportButton: React.FC = () => {
     doc.text("Rapport des Contributions", 10, 10);
     doc.text(`Mode de distribution : ${distributionMode}`, 10, 20);
 
-    contributions.forEach((contribution, index) => {
+    contributions.forEach((contribution: Contribution, index: number) => {
       const yPos = 30 + index * 40;
       doc.text(`${contribution.name}:`, 10, yPos);
       doc.text(
@@ -26,9 +27,7 @@ const ExportButton: React.FC = () => {
         yPos + 10
       );
       doc.text(
-        `Contribution personnelle: ${contribution.contributionPersonnelle.toFixed(
-          2
-        )} €`,
+        `Dépenses personnelles: ${contribution.personalExpenses.toFixed(2)} €`,
         20,
         yPos + 20
       );

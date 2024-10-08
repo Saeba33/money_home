@@ -4,44 +4,38 @@ export const INITIAL_PEOPLE = [
 
 export const INITIAL_EXPENSES = [
   {
+    id: 1,
     name: "Loyer",
-    amountMonthly: undefined,
-    amountYearly: undefined,
+    amount: undefined,
+ 
     assignedTo: "foyer",
     comments: "",
   },
   {
+    id: 2,
     name: "Eau",
-    amountMonthly: undefined,
-    amountYearly: undefined,
+    amount: undefined,
     assignedTo: "foyer",
     comments: "",
   },
   {
+    id: 3,
     name: "Électricité",
-    amountMonthly: undefined,
-    amountYearly: undefined,
+    amount: undefined,
     assignedTo: "foyer",
     comments: "",
   },
   {
+    id: 4,
     name: "Internet",
-    amountMonthly: undefined,
-    amountYearly: undefined,
-    assignedTo: "foyer",
+    amount: undefined,
+     assignedTo: "foyer",
     comments: "",
   },
 ];
 
-export const INITIAL_NEW_EXPENSE = {
-  name: "",
-  amountMonthly: undefined,
-  amountYearly: undefined,
-  comments: "",
-  assignedTo: "foyer",
-};
-
 export const INITIAL_NEW_REVENUE = {
+  id: 0,
   name: "",
   amount: undefined,
   assignedTo: "foyer",
@@ -49,33 +43,33 @@ export const INITIAL_NEW_REVENUE = {
 };
 
 export const INITIAL_NEW_SAVING = {
+  id: 0,
   name: "",
   amount: undefined,
   assignedTo: "foyer",
   comments: "",
 };
-
-export const FOYER = "foyer";
-
-export const ERROR_MESSAGES = {
-  INVALID_INPUT: "Entrée invalide. Veuillez entrer un nombre positif.",
-  MISSING_FIELDS: "Veuillez remplir tous les champs obligatoires.",
+export const INITIAL_NEW_EXPENSE = {
+  id: 0,
+  name: "",
+  amount: undefined,
+  comments: "",
+  assignedTo: "foyer",
 };
-
 
 export const INFO_TEXTS = {
   PEOPLE:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  INCOME:
+  REVENUES:
     "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  SAVINGS:
+    "Cette section affiche votre épargne totale et vous permet de définir et suivre un objectif d'épargne.",
   EXPENSES:
     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-  DISTRIBUTION_MODE:
+  DISTRIBUTION:
     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   CONTRIBUTIONS:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  SAVINGS:
-    "Cette section affiche votre épargne totale et vous permet de définir et suivre un objectif d'épargne.",
   ANALYSE:
     "Cette section affiche votre épargne totale et vous permet de définir et suivre un objectif d'épargne.",
   CHART:

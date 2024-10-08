@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useAppContext } from "../contexts/AppContext";
-import { INFO_TEXTS } from "../constants/index";
-import SectionHeader from "./SectionHeader";
+import React, { useEffect, useState } from "react";
+import { INFO_TEXTS } from "@/constants/index";
+import { useAppContext } from "@/contexts/AppContext";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const AnalyseManager: React.FC = () => {
   const { people, expenses, savings, contributions } = useAppContext();
@@ -25,7 +25,7 @@ const AnalyseManager: React.FC = () => {
 
       // Dépenses totales
       const totalExpenses = expenses.reduce(
-        (sum, expense) => sum + (expense.amountMonthly || 0),
+        (sum, expense) => sum + (expense.amount || 0),
         0
       );
       analysisText += `Les dépenses mensuelles totales sont de ${totalExpenses.toFixed(

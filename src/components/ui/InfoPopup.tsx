@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { InfoPopupProps } from "../types/types";
+import { InfoPopupProps } from "@/types/types";
 
 const InfoPopup: React.FC<InfoPopupProps> = ({ text, isOpen, onClose }) => {
   const popupRef = useRef<HTMLDivElement>(null);
