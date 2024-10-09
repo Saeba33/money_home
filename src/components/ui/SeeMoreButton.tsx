@@ -1,15 +1,8 @@
-// components/ui/ToggleButton.tsx
 import React from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { ExpandCollapseButtonProps } from "@/types/types";
 
-interface ToggleButtonProps {
-  isExpanded: boolean;
-  onClick: () => void;
-  expandedText: string;
-  collapsedText: string;
-}
-
-const ToggleButton: React.FC<ToggleButtonProps> = ({
+const ExpandCollapseButton: React.FC<ExpandCollapseButtonProps> = ({
   isExpanded,
   onClick,
   expandedText,
@@ -17,7 +10,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
 }) => (
   <button
     onClick={onClick}
-    className="mt-2 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 flex items-center"
+    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center"
   >
     {isExpanded ? (
       <>
@@ -31,4 +24,4 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   </button>
 );
 
-export default ToggleButton;
+export default ExpandCollapseButton;

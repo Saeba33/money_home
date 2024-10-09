@@ -1,32 +1,44 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { Revenue } from "@/types/types";
 import { INITIAL_NEW_REVENUE } from "@/constants";
+import {
+  showSuccessNotification,
+  showWarningNotification,
+  showDeleteNotification,
+} from "@/components/ui/Notifications";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export const useRevenues = () => {
-  const [revenues, setRevenues] = useState<Revenue[]>([]);
-  const [newRevenue, setNewRevenue] = useState<Revenue>(INITIAL_NEW_REVENUE);
+  const [revenues, setRevenues] = useLocalStorage<Revenue[]>("revenues", []);
+  const [newRevenue, setNewRevenue] = useLocalStorage<Revenue>(
+    "newRevenue",
+    INITIAL_NEW_REVENUE
+  );
 
-  // Met à jour les détails du nouveau revenu
-  const updateNewRevenue = useCallback((updatedRevenue: Partial<Revenue>) => {
-    setNewRevenue((prev) => ({ ...prev, ...updatedRevenue }));
-  }, []);
+  const updateNewRevenue = useCallback(
+    (updatedRevenue: Partial<Revenue>) => {
+      setNewRevenue((prev) => ({ ...prev, ...updatedRevenue }));
+    },
+    [setNewRevenue]
+  );
 
-  // Ajoute un nouveau revenu
   const addRevenue = useCallback(() => {
-    if (
-      newRevenue.name &&
-      newRevenue.amount !== undefined &&
-      newRevenue.assignedTo
-    ) {
-      const revenueWithId = { ...newRevenue, id: Date.now() }; // Génération d'un ID unique
-      setRevenues((prev) => [...prev, revenueWithId]);
-
-      // Réinitialisation de l'état pour préparer la prochaine entrée
-      setNewRevenue(INITIAL_NEW_REVENUE);
+    if (!newRevenue.name || newRevenue.amount === undefined) {
+      const missingFields = [];
+      if (!newRevenue.name) missingFields.push("nom du revenu");
+      if (newRevenue.amount === undefined) missingFields.push("montant");
+      showWarningNotification(
+        `Veuillez renseigner : ${missingFields.join(", ")}`
+      );
+      return;
     }
-  }, [newRevenue]);
 
-  // Met à jour un revenu existant
+    const revenueWithId = { ...newRevenue, id: Date.now() };
+    setRevenues((prev) => [...prev, revenueWithId]);
+    setNewRevenue(INITIAL_NEW_REVENUE);
+    showSuccessNotification("Revenu ajouté avec succès");
+  }, [newRevenue, setRevenues, setNewRevenue]);
+
   const updateRevenue = useCallback(
     (id: number, updatedRevenue: Partial<Revenue>) => {
       setRevenues((prev) =>
@@ -35,13 +47,16 @@ export const useRevenues = () => {
         )
       );
     },
-    []
+    [setRevenues]
   );
 
-  // Supprime un revenu
-  const deleteRevenue = useCallback((id: number) => {
-    setRevenues((prev) => prev.filter((revenue) => revenue.id !== id));
-  }, []);
+  const deleteRevenue = useCallback(
+    (id: number) => {
+      setRevenues((prev) => prev.filter((revenue) => revenue.id !== id));
+      showDeleteNotification("Revenu supprimé");
+    },
+    [setRevenues]
+  );
 
   return {
     revenues,

@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
-
 
 :root {
   --primary-color: #4a90e2;
@@ -28,6 +26,7 @@ body {
 
 .section-header-base {
   @apply flex items-center justify-between bg-blue-500 text-white p-3 cursor-pointer;
+  transition: border-radius 0.8s ease;
 }
 
 .section-header-open {
@@ -43,11 +42,32 @@ body {
 }
 
 .section-info {
-  @apply text-white text-2xl ml-3 ;
+  @apply text-white text-2xl ml-3;
+}
+
+.section-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.section-content-wrapper.open {
+  max-height: 2000px; /* Ajustez cette valeur selon vos besoins */
 }
 
 .section-content {
-  @apply p-3 bg-white rounded-b-xl;
+  @apply bg-white rounded-b-xl;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out,
+    padding 0.5s ease-in-out;
+  padding: 0 1rem;
+}
+
+.section-content-wrapper.open .section-content {
+  opacity: 1;
+  transform: translateY(0);
+  padding: 1rem;
 }
 
 .section-field {
@@ -59,6 +79,7 @@ body {
 }
 
 .btn {
+  @apply w-full sm:w-auto;
   background-color: var(--secondary-color);
   color: white;
   padding: 0.5rem 1rem;
@@ -72,3 +93,4 @@ body {
   @apply border rounded text-black p-2 text-sm;
 }
 
+/* Autres styles... */

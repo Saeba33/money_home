@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { INFO_TEXTS } from "@/constants/index";
 import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -60,7 +59,7 @@ const SavingsManager: React.FC = () => {
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
           />
-          <button onClick={addSaving} className="btn w-full sm:w-auto">
+          <button onClick={addSaving} className="btn">
             Ajouter
           </button>
         </div>
@@ -132,7 +131,7 @@ const SavingsManager: React.FC = () => {
               />
               <button
                 onClick={() => deleteSaving(saving.id)}
-                className="can w-full sm:w-auto"
+                className="can "
               >
                 <FaRegTrashCan />
               </button>
@@ -146,7 +145,7 @@ const SavingsManager: React.FC = () => {
   return (
     <SectionHeader
       title="Épargne"
-      infoText={INFO_TEXTS.SAVINGS}
+      infoTextKey="SAVINGS"
       defaultOpenedSection={true}
     >
       {memoizedNewSavingForm}

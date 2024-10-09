@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { INFO_TEXTS } from "@/constants/index";
 import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
 
@@ -63,7 +62,7 @@ const RevenuesManager: React.FC = () => {
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
           />
-          <button onClick={addRevenue} className="btn w-full sm:w-auto">
+          <button onClick={addRevenue} className="btn">
             Ajouter
           </button>
         </div>
@@ -138,7 +137,7 @@ const RevenuesManager: React.FC = () => {
               />
               <button
                 onClick={() => deleteRevenue(revenue.id)}
-                className="can w-full sm:w-auto"
+                className="can"
               >
                 <FaRegTrashCan />
               </button>
@@ -152,7 +151,7 @@ const RevenuesManager: React.FC = () => {
   return (
     <SectionHeader
       title="Revenus"
-      infoText={INFO_TEXTS.REVENUES}
+      infoTextKey="REVENUES"
       defaultOpenedSection={true}
     >
       {memoizedNewRevenueForm}

@@ -3,10 +3,11 @@ import { BsInfoSquareFill } from "react-icons/bs";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { SectionHeaderProps } from "@/types/types";
 import InfoPopup from "@/components/ui/InfoPopup";
+import { INFO_TEXTS } from "@/constants";
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
-  infoText,
+  infoTextKey,
   children,
   defaultOpenedSection = true,
 }) => {
@@ -36,9 +37,11 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         </h2>
         {isOpen ? <FaChevronUp size={20} /> : <FaChevronDown size={20} />}
       </div>
-      {isOpen && <div className="section-content">{children}</div>}
+      <div className={`section-content-wrapper ${isOpen ? "open" : ""}`}>
+        <div className="section-content">{children}</div>
+      </div>
       <InfoPopup
-        text={infoText}
+        text={INFO_TEXTS[infoTextKey]}
         isOpen={isInfoPopupOpen}
         onClose={() => setIsInfoPopupOpen(false)}
       />

@@ -3,7 +3,7 @@ import { DistributionMode } from "@/types/types";
 
 export const useDistributionMode = () => {
   const [distributionMode, setDistributionMode] =
-    useState<DistributionMode>("equal");
+    useState<DistributionMode>("égalitaire");
 
   return { distributionMode, setDistributionMode };
 };

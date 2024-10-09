@@ -1,5 +1,4 @@
 import React from "react";
-import { INFO_TEXTS } from "@/constants/index";
 import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { DistributionMode } from "@/types/types";
@@ -11,12 +10,12 @@ const DistributionModeComponent: React.FC = () => {
     return null;
   }
 
-  const modes: DistributionMode[] = ["equal", "proportional", "percentage"];
+  const modes: DistributionMode[] = ["égalitaire", "proportionel", "personnalisé"];
 
   return (
     <SectionHeader
       title="Modes de répartition"
-      infoText={INFO_TEXTS.DISTRIBUTION}
+      infoTextKey="DISTRIBUTION"
       defaultOpenedSection={true}
     >
       <div className="flex space-x-4">

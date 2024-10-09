@@ -1,31 +1,46 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { Expense } from "@/types/types";
 import { INITIAL_NEW_EXPENSE, INITIAL_EXPENSES } from "@/constants";
+import {
+  showSuccessNotification,
+  showWarningNotification,
+  showDeleteNotification,
+} from "@/components/ui/Notifications";
+import { useLocalStorage } from "./useLocalStorage";
 
 export const useExpenses = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [newExpense, setNewExpense] = useState<Expense>(INITIAL_NEW_EXPENSE);
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>(
+    "expenses",
+    INITIAL_EXPENSES
+  );
+  const [newExpense, setNewExpense] = useLocalStorage<Expense>(
+    "newExpense",
+    INITIAL_NEW_EXPENSE
+  );
 
-  // Utiliser useEffect pour initialiser les dépenses avec INITIAL_EXPENSES
-  useEffect(() => {
-    setExpenses(INITIAL_EXPENSES);
-  }, []);
-
-  const updateNewExpense = useCallback((updatedExpense: Partial<Expense>) => {
-    setNewExpense((prev) => ({ ...prev, ...updatedExpense }));
-  }, []);
+  const updateNewExpense = useCallback(
+    (updatedExpense: Partial<Expense>) => {
+      setNewExpense((prev) => ({ ...prev, ...updatedExpense }));
+    },
+    [setNewExpense]
+  );
 
   const addExpense = useCallback(() => {
-    if (
-      newExpense.name &&
-      newExpense.amount !== undefined &&
-      newExpense.assignedTo
-    ) {
-      const expenseWithId = { ...newExpense, id: Date.now() };
-      setExpenses((prev) => [...prev, expenseWithId]);
-      setNewExpense(INITIAL_NEW_EXPENSE);
+    if (!newExpense.name || newExpense.amount === undefined) {
+      const missingFields = [];
+      if (!newExpense.name) missingFields.push("nom de la dépense");
+      if (newExpense.amount === undefined) missingFields.push("montant");
+      showWarningNotification(
+        `Veuillez renseigner : ${missingFields.join(", ")}`
+      );
+      return;
     }
-  }, [newExpense]);
+
+    const expenseWithId = { ...newExpense, id: Date.now() };
+    setExpenses((prev) => [...prev, expenseWithId]);
+    setNewExpense(INITIAL_NEW_EXPENSE);
+    showSuccessNotification("Dépense ajoutée avec succès");
+  }, [newExpense, setExpenses, setNewExpense]);
 
   const updateExpense = useCallback(
     (id: number, updatedExpense: Partial<Expense>) => {
@@ -35,12 +50,16 @@ export const useExpenses = () => {
         )
       );
     },
-    []
+    [setExpenses]
   );
 
-  const deleteExpense = useCallback((id: number) => {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
-  }, []);
+  const deleteExpense = useCallback(
+    (id: number) => {
+      setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+      showDeleteNotification("Dépense supprimée");
+    },
+    [setExpenses]
+  );
 
   return {
     expenses,

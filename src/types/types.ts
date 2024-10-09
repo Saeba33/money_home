@@ -1,6 +1,15 @@
 // Interfaces Financières //
 
+export interface FinancialItem {
+  id: number;
+  name: string;
+  amount: number | undefined;
+  assignedTo: string;
+  comments: string;
+}
+
 export interface Person {
+  id: number;
   name: string;
   percentage: number;
   revenues: Revenue[];
@@ -51,6 +60,24 @@ export interface ContributionSummary {
   foyerSavings: number;
 }
 
+export interface InfoText {
+  description: string;
+  example?: string;
+}
+
+export interface InfoTexts {
+  PEOPLE: InfoText;
+  REVENUES: InfoText;
+  SAVINGS: InfoText;
+  EXPENSES: InfoText;
+  DISTRIBUTION: InfoText;
+  CONTRIBUTIONS: InfoText;
+  CHARTS: InfoText;
+  ANALYSE: InfoText;
+}
+
+export type InfoTextKey = keyof InfoTexts;
+
 // Props de Composants //
 
 export interface SavingItemProps {
@@ -59,28 +86,57 @@ export interface SavingItemProps {
   isNew?: boolean;
 }
 
+export interface ContributionDetailsProps {
+  name: string;
+  contribution: Contribution;
+  revenues: Revenue[];
+  expenses: Expense[];
+  savings: Saving[];
+}
+
 export interface SectionHeaderProps {
   title: string;
-  infoText: string;
+  infoTextKey: InfoTextKey;
   children: React.ReactNode;
   defaultOpenedSection?: boolean;
 }
 
 export interface InfoPopupProps {
-  text: string;
+  text: InfoText;
   isOpen: boolean;
   onClose: () => void;
 }
+
+export interface ContributionChartProps {
+  contributions: Contribution[];
+  summary: ContributionSummary;
+}
+
+export interface ExpandCollapseButtonProps {
+  isExpanded: boolean;
+  onClick: () => void;
+  expandedText: string;
+  collapsedText: string;
+}
+
+export interface ShowHideDetailsButtonProps {
+  isExpanded: boolean;
+  onClick: () => void;
+  expandedText: string;
+  collapsedText: string;
+}
+
 
 // Types de Contexte //
 
 export interface AppContextType {
   // De usePeople
   people: Person[];
-  setPeople: React.Dispatch<React.SetStateAction<Person[]>>;
-  handleAddPerson: () => void;
-  handleRemovePerson: (index: number) => void;
-  handlePercentageChange: (index: number, value: number) => void;
+  addPerson: () => void;
+  updatePerson: (id: number, updatedPerson: Partial<Person>) => void;
+  deletePerson: (id: number) => void;
+  updatePersonPercentage: (id: number, value: number) => void;
+  percentageWarning: string | null;
 
   // De useExpenses
   expenses: Expense[];
@@ -120,4 +176,4 @@ export interface AppContextType {
 
 // Types Divers //
 
-export type DistributionMode = "equal" | "proportional" | "percentage";
+export type DistributionMode = "égalitaire" | "proportionel" | "personnalisé";

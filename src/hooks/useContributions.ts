@@ -21,10 +21,10 @@ export const useContributions = (
   warning: string | null;
 } => {
   return useMemo(() => {
-    // Assurez-vous que revenues est un tableau
+   
     const safeRevenues = Array.isArray(revenues) ? revenues : [];
 
-    // Calculs des totaux
+   
     const totalExpenses = expenses.reduce(
       (sum, expense) => sum + (expense.amount || 0),
       0
@@ -38,8 +38,7 @@ export const useContributions = (
       0
     );
 
-    // Calcul des dépenses et épargnes du foyer
-    const foyerExpenses = expenses.filter(
+        const foyerExpenses = expenses.filter(
       (expense) => expense.assignedTo === "foyer"
     );
     const foyerSavings = savings.filter(
@@ -55,7 +54,6 @@ export const useContributions = (
     );
     const totalFoyerCosts = totalFoyerExpenses + totalFoyerSavings;
 
-    // Calcul des revenus du foyer
     const foyerRevenues = safeRevenues.filter(
       (revenue) => revenue.assignedTo === "foyer"
     );
@@ -67,13 +65,13 @@ export const useContributions = (
       people.length > 0 ? totalFoyerRevenue / people.length : 0;
 
     let warning: string | null = null;
-    if (totalRevenues === 0 && distributionMode === "proportional") {
+    if (totalRevenues === 0 && distributionMode === "proportionel") {
       warning =
         "Veuillez saisir un revenu pour utiliser le mode de répartition proportionnel.";
     }
 
     const contributions = people.map((person) => {
-      // Calculs spécifiques à la personne
+
       const personalExpenses = expenses.filter(
         (expense) => expense.assignedTo === person.name
       );
@@ -99,17 +97,16 @@ export const useContributions = (
 
       const totalPersonRevenue = totalPersonalRevenues + foyerRevenuePerPerson;
 
-      // Calcul de la contribution au foyer selon le mode de distribution
       let contributionFoyer: number;
       let percentage: number;
 
       switch (distributionMode) {
-        case "equal":
+        case "égalitaire":
           contributionFoyer =
             people.length > 0 ? totalFoyerCosts / people.length : 0;
           percentage = people.length > 0 ? 100 / people.length : 0;
           break;
-        case "proportional":
+        case "proportionel":
           if (totalRevenues === 0) {
             contributionFoyer = 0;
             percentage = 0;
@@ -119,7 +116,7 @@ export const useContributions = (
             percentage = (totalPersonRevenue / totalRevenues) * 100;
           }
           break;
-        case "percentage":
+        case "personnalisé":
           contributionFoyer = (person.percentage / 100) * totalFoyerCosts;
           percentage = person.percentage;
           break;
@@ -143,7 +140,6 @@ export const useContributions = (
       };
     });
 
-    // Résumé global
     const summary: ContributionSummary = {
       totalRevenues: parseFloat(totalRevenues.toFixed(2)),
       totalExpenses: parseFloat(totalExpenses.toFixed(2)),
