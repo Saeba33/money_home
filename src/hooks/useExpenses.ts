@@ -9,14 +9,12 @@ import {
 import { useLocalStorage } from "./useLocalStorage";
 
 export const useExpenses = () => {
-  const [expenses, setExpenses] = useLocalStorage<Expense[]>(
+  const [expenses, setExpenses, isLoadingExpenses] = useLocalStorage<Expense[]>(
     "expenses",
     INITIAL_EXPENSES
   );
-  const [newExpense, setNewExpense] = useLocalStorage<Expense>(
-    "newExpense",
-    INITIAL_NEW_EXPENSE
-  );
+  const [newExpense, setNewExpense, isLoadingNewExpense] =
+    useLocalStorage<Expense>("newExpense", INITIAL_NEW_EXPENSE);
 
   const updateNewExpense = useCallback(
     (updatedExpense: Partial<Expense>) => {
@@ -61,6 +59,8 @@ export const useExpenses = () => {
     [setExpenses]
   );
 
+  const isLoading = isLoadingExpenses || isLoadingNewExpense;
+
   return {
     expenses,
     newExpense,
@@ -68,5 +68,6 @@ export const useExpenses = () => {
     addExpense,
     updateExpense,
     deleteExpense,
+    isLoading,
   };
 };

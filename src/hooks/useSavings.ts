@@ -9,8 +9,11 @@ import {
 import { useLocalStorage } from "./useLocalStorage";
 
 export const useSavings = () => {
-  const [savings, setSavings] = useLocalStorage<Saving[]>("savings", []);
-  const [newSaving, setNewSaving] = useLocalStorage<Saving>(
+  const [savings, setSavings, isLoadingSavings] = useLocalStorage<Saving[]>(
+    "savings",
+    []
+  );
+  const [newSaving, setNewSaving, isLoadingNewSaving] = useLocalStorage<Saving>(
     "newSaving",
     INITIAL_NEW_SAVING
   );
@@ -58,6 +61,8 @@ export const useSavings = () => {
     [setSavings]
   );
 
+  const isLoading = isLoadingSavings || isLoadingNewSaving;
+
   return {
     savings,
     newSaving,
@@ -65,5 +70,6 @@ export const useSavings = () => {
     addSaving,
     updateSaving,
     deleteSaving,
+    isLoading,
   };
 };

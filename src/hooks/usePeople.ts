@@ -1,14 +1,15 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Person } from "@/types/types";
 import { useLocalStorage } from "./useLocalStorage";
 
 export const usePeople = () => {
-  const [people, setPeople] = useLocalStorage<Person[]>("people", [
-    { id: 1, name: "Personne 1", percentage: 100, revenues: [] },
+  const [people, setPeople, isLoading] = useLocalStorage<Person[]>("people", [
+    { id: 1, name: "Personne 1", percentage: 100 },
   ]);
   const [percentageWarning, setPercentageWarning] = useLocalStorage<
     string | null
   >("percentageWarning", null);
+  const [personToDelete, setPersonToDelete] = useState<Person | null>(null);
 
   const recalculatePercentages = useCallback((updatedPeople: Person[]) => {
     const totalPercentage = 100;
@@ -25,7 +26,6 @@ export const usePeople = () => {
       id: newPersonId,
       name: `Personne ${people.length + 1}`,
       percentage: 0,
-      revenues: [],
     };
     const updatedPeople = [...people, newPerson];
     const recalculatedPeople = recalculatePercentages(updatedPeople);
@@ -44,7 +44,11 @@ export const usePeople = () => {
     [setPeople]
   );
 
-  const deletePerson = useCallback(
+  const initiateDeletePerson = useCallback((person: Person) => {
+    setPersonToDelete(person);
+  }, []);
+
+  const confirmDeletePerson = useCallback(
     (id: number) => {
       if (people.length > 1) {
         const updatedPeople = people.filter((person) => person.id !== id);
@@ -52,9 +56,14 @@ export const usePeople = () => {
         setPeople(recalculatedPeople);
         setPercentageWarning(null);
       }
+      setPersonToDelete(null);
     },
     [people, recalculatePercentages, setPeople, setPercentageWarning]
   );
+
+  const cancelDeletePerson = useCallback(() => {
+    setPersonToDelete(null);
+  }, []);
 
   const updatePersonPercentage = useCallback(
     (id: number, value: number) => {
@@ -93,8 +102,12 @@ export const usePeople = () => {
     people,
     addPerson,
     updatePerson,
-    deletePerson,
+    initiateDeletePerson,
+    confirmDeletePerson,
+    cancelDeletePerson,
     updatePersonPercentage,
     percentageWarning,
+    personToDelete,
+    isLoading,
   };
 };

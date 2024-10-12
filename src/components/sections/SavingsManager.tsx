@@ -26,13 +26,15 @@ const SavingsManager: React.FC = () => {
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom de l'épargne"
+            aria-label="Nom de l'épargne"
           />
           <select
             value={newSaving.assignedTo}
             onChange={(e) =>
               updateNewSaving({ ...newSaving, assignedTo: e.target.value })
             }
-            className="input w-full sm:w-auto"
+            className="select"
+            aria-label="Assigné à"
           >
             <option value="foyer">Foyer</option>
             {people.map((person, idx) => (
@@ -49,6 +51,7 @@ const SavingsManager: React.FC = () => {
             }
             className="input w-full sm:w-32"
             placeholder="Montant"
+            aria-label="Montant"
           />
           <input
             type="text"
@@ -58,8 +61,13 @@ const SavingsManager: React.FC = () => {
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
+            aria-label="Commentaires"
           />
-          <button onClick={addSaving} className="btn">
+          <button
+            onClick={addSaving}
+            className="btn"
+            aria-label="Ajouter une épargne"
+          >
             Ajouter
           </button>
         </div>
@@ -88,6 +96,7 @@ const SavingsManager: React.FC = () => {
                   updateSaving(saving.id, { ...saving, name: e.target.value })
                 }
                 className="input flex-grow min-w-[200px]"
+                aria-label="Nom de l'épargne"
               />
               <select
                 value={saving.assignedTo}
@@ -97,7 +106,8 @@ const SavingsManager: React.FC = () => {
                     assignedTo: e.target.value,
                   })
                 }
-                className="input w-full sm:w-auto"
+                className="select"
+                aria-label="Assigné à"
               >
                 <option value="foyer">Foyer</option>
                 {people.map((person, idx) => (
@@ -116,6 +126,7 @@ const SavingsManager: React.FC = () => {
                   })
                 }
                 className="input w-full sm:w-32"
+                aria-label="Montant"
               />
               <input
                 type="text"
@@ -128,10 +139,12 @@ const SavingsManager: React.FC = () => {
                 }
                 className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
                 placeholder="Commentaires"
+                aria-label="Commentaires"
               />
               <button
                 onClick={() => deleteSaving(saving.id)}
-                className="can "
+                className="can"
+                aria-label="Supprimer l'épargne"
               >
                 <FaRegTrashCan />
               </button>

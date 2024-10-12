@@ -1,37 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
+import React, { useEffect, useState } from "react";
 
 const AnalyseManager: React.FC = () => {
-  const { people, expenses, savings, revenues, contributions } =
-    useAppContext();
+  const { people, contributions } = useAppContext();
   const [analysis, setAnalysis] = useState<string>("");
 
   useEffect(() => {
     const generateAnalysis = () => {
       const isSinglePerson = people.length === 1;
-      const totalRevenue = contributions.contributions.reduce(
-        (sum, c) => sum + c.totalRevenue,
-        0
-      );
-      const totalExpenses = expenses.reduce(
-        (sum, e) => sum + (e.amount || 0),
-        0
-      );
-      const totalSavings = savings.reduce((sum, s) => sum + (s.amount || 0), 0);
-      const balance = totalRevenue - totalExpenses - totalSavings;
-      const expensePercentage = (totalExpenses / totalRevenue) * 100;
-      const savingsRate = (totalSavings / totalRevenue) * 100;
+      const { summary } = contributions;
+      const totalIncome = summary.totalGlobalIncome;
+      const totalExpenses = summary.totalGlobalExpenses;
+      const totalSavings = summary.totalGlobalSavings;
+      const totalContributions = summary.totalGlobalContributions;
+      const balance = summary.totalBalance;
+      const expensePercentage = (totalExpenses / totalIncome) * 100;
+      const savingsRate = (totalSavings / totalIncome) * 100;
 
       let analysis = "";
 
       // Revenus
-      if (totalRevenue === 0) {
+      if (totalIncome === 0) {
         return "Veuillez saisir vos revenus pour obtenir une analyse financière.";
       }
       analysis += `${isSinglePerson ? "Vos" : "Les"} revenus totaux ${
         isSinglePerson ? "s'élèvent" : "du foyer s'élèvent"
-      } à ${totalRevenue.toFixed(2)} € par mois.\n\n`;
+      } à ${totalIncome.toFixed(2)} € par mois.\n\n`;
 
       // Dépenses
       if (totalExpenses === 0) {
@@ -58,13 +53,10 @@ const AnalyseManager: React.FC = () => {
         analysis += `Attention : La balance mensuelle est négative (${balance.toFixed(
           2
         )} €). `;
-        analysis +=
-          totalSavings > 0
-            ? "Les dépenses et épargnes combinées dépassent les revenus. "
-            : "Les dépenses dépassent les revenus. ";
+        analysis += "Les contributions dépassent les revenus. ";
         analysis +=
           "Il est crucial de revoir le budget pour équilibrer les finances.\n\n";
-      } else if (balance > totalRevenue * 0.2) {
+      } else if (balance > totalIncome * 0.2) {
         analysis += `Vous avez une marge confortable de ${balance.toFixed(
           2
         )} €. Envisagez d'augmenter votre épargne ou d'investir cet excédent.\n\n`;
@@ -75,26 +67,29 @@ const AnalyseManager: React.FC = () => {
       }
 
       // Principaux postes de dépenses
-      const topExpenses = expenses
-        .filter((e) => e.amount && e.amount > 0)
-        .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+      const topContributions = contributions.contributions
+        .map((c) => ({
+          name: c.name,
+          amount: c.totalContributions,
+        }))
+        .sort((a, b) => b.amount - a.amount)
         .slice(0, 3);
 
-      if (topExpenses.length > 0) {
-        analysis += "Principaux postes de dépenses :\n";
-        topExpenses.forEach((e) => {
-          const percent = ((e.amount || 0) / totalExpenses) * 100;
-          analysis += `- ${e.name}: ${e.amount?.toFixed(
+      if (topContributions.length > 0) {
+        analysis += "Principaux contributeurs :\n";
+        topContributions.forEach((c) => {
+          const percent = (c.amount / totalContributions) * 100;
+          analysis += `- ${c.name}: ${c.amount.toFixed(2)} € (${percent.toFixed(
             2
-          )} € (${percent.toFixed(2)}% des dépenses totales)\n`;
+          )}% des contributions totales)\n`;
         });
         analysis += "\n";
       }
 
       // Conseils personnalisés
-      if (totalExpenses > totalRevenue * 0.7) {
+      if (totalContributions > totalIncome * 0.7) {
         analysis +=
-          "Les dépenses représentent une part importante des revenus. Essayez d'identifier les domaines où vous pourriez les réduire.\n\n";
+          "Les contributions représentent une part importante des revenus. Essayez d'identifier les domaines où vous pourriez les réduire.\n\n";
       }
 
       // Vérification des balances individuelles
@@ -116,7 +111,7 @@ const AnalyseManager: React.FC = () => {
     };
 
     setAnalysis(generateAnalysis());
-  }, [people, expenses, savings, revenues, contributions]);
+  }, [people, contributions]);
 
   return (
     <SectionHeader

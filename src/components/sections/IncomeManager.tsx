@@ -1,38 +1,40 @@
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
 import React, { useMemo } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { useAppContext } from "@/contexts/AppContext";
-import SectionHeader from "@/components/ui/SectionHeader";
 
-const RevenuesManager: React.FC = () => {
+const IncomeManager: React.FC = () => {
   const {
-    revenues,
-    newRevenue,
-    updateNewRevenue,
-    addRevenue,
-    updateRevenue,
-    deleteRevenue,
+    income,
+    newIncome,
+    updateNewIncome,
+    addIncome,
+    updateIncome,
+    deleteIncome,
     people,
   } = useAppContext();
 
-  const memoizedNewRevenueForm = useMemo(
+  const memoizedNewIncomeForm = useMemo(
     () => (
       <div className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
         <div className="flex flex-wrap gap-2 w-full items-center">
           <input
             type="text"
-            value={newRevenue.name}
+            value={newIncome.name}
             onChange={(e) =>
-              updateNewRevenue({ ...newRevenue, name: e.target.value })
+              updateNewIncome({ ...newIncome, name: e.target.value })
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom du revenu"
+            aria-label="Nom du revenu"
           />
           <select
-            value={newRevenue.assignedTo}
+            value={newIncome.assignedTo}
             onChange={(e) =>
-              updateNewRevenue({ ...newRevenue, assignedTo: e.target.value })
+              updateNewIncome({ ...newIncome, assignedTo: e.target.value })
             }
-            className="input w-full sm:w-auto"
+            className="select"
+            aria-label="Assigné à"
           >
             <option value="foyer">Foyer</option>
             {people.map((person, idx) => (
@@ -43,67 +45,75 @@ const RevenuesManager: React.FC = () => {
           </select>
           <input
             type="number"
-            value={newRevenue.amount || ""}
+            value={newIncome.amount || ""}
             onChange={(e) =>
-              updateNewRevenue({
-                ...newRevenue,
+              updateNewIncome({
+                ...newIncome,
                 amount: Number(e.target.value),
               })
             }
             className="input w-full sm:w-32"
             placeholder="Montant"
+            aria-label="Montant"
           />
           <input
             type="text"
-            value={newRevenue.comments}
+            value={newIncome.comments}
             onChange={(e) =>
-              updateNewRevenue({ ...newRevenue, comments: e.target.value })
+              updateNewIncome({ ...newIncome, comments: e.target.value })
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
+            aria-label="Commentaires"
           />
-          <button onClick={addRevenue} className="btn">
+          <button
+            onClick={addIncome}
+            className="btn"
+            aria-label="Ajouter un revenu"
+          >
             Ajouter
           </button>
         </div>
       </div>
     ),
-    [newRevenue, updateNewRevenue, addRevenue, people]
+    [newIncome, updateNewIncome, addIncome, people]
   );
 
-  const memoizedRevenueList = useMemo(() => {
-    if (revenues.length === 0) return null;
+  const memoizedIncomeList = useMemo(() => {
+    if (income.length === 0) return null;
 
     return (
       <>
         <h3 className="font-bold mt-4 mb-2">Liste des revenus saisis</h3>
         <hr className="mb-4" />
-        {revenues.map((revenue) => (
+        {income.map((income) => (
           <div
-            key={revenue.id}
+            key={income.id}
             className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4"
           >
             <div className="flex flex-wrap gap-2 w-full items-center">
               <input
                 type="text"
-                value={revenue.name}
+                value={income.name}
                 onChange={(e) =>
-                  updateRevenue(revenue.id, {
-                    ...revenue,
+                  updateIncome(income.id, {
+                    ...income,
                     name: e.target.value,
                   })
                 }
                 className="input flex-grow min-w-[200px]"
+                aria-label="Nom du revenu"
               />
               <select
-                value={revenue.assignedTo}
+                value={income.assignedTo}
                 onChange={(e) =>
-                  updateRevenue(revenue.id, {
-                    ...revenue,
+                  updateIncome(income.id, {
+                    ...income,
                     assignedTo: e.target.value,
                   })
                 }
-                className="input w-full sm:w-auto"
+                className="select"
+                aria-label="Assigné à"
               >
                 <option value="foyer">Foyer</option>
                 {people.map((person, idx) => (
@@ -114,30 +124,33 @@ const RevenuesManager: React.FC = () => {
               </select>
               <input
                 type="number"
-                value={revenue.amount || ""}
+                value={income.amount || ""}
                 onChange={(e) =>
-                  updateRevenue(revenue.id, {
-                    ...revenue,
+                  updateIncome(income.id, {
+                    ...income,
                     amount: Number(e.target.value),
                   })
                 }
                 className="input w-full sm:w-32"
+                aria-label="Montant"
               />
               <input
                 type="text"
-                value={revenue.comments}
+                value={income.comments}
                 onChange={(e) =>
-                  updateRevenue(revenue.id, {
-                    ...revenue,
+                  updateIncome(income.id, {
+                    ...income,
                     comments: e.target.value,
                   })
                 }
                 className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
                 placeholder="Commentaires"
+                aria-label="Commentaires"
               />
               <button
-                onClick={() => deleteRevenue(revenue.id)}
+                onClick={() => deleteIncome(income.id)}
                 className="can"
+                aria-label="Supprimer le revenu"
               >
                 <FaRegTrashCan />
               </button>
@@ -146,18 +159,18 @@ const RevenuesManager: React.FC = () => {
         ))}
       </>
     );
-  }, [revenues, updateRevenue, deleteRevenue, people]);
+  }, [income, updateIncome, deleteIncome, people]);
 
   return (
     <SectionHeader
       title="Revenus"
-      infoTextKey="REVENUES"
+      infoTextKey="INCOME"
       defaultOpenedSection={true}
     >
-      {memoizedNewRevenueForm}
-      {memoizedRevenueList}
+      {memoizedNewIncomeForm}
+      {memoizedIncomeList}
     </SectionHeader>
   );
 };
 
-export default RevenuesManager;
+export default IncomeManager;

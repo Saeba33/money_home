@@ -1,5 +1,6 @@
 import React from "react";
 import { resetAllData } from "@/utils/resetAllData";
+import { FaRedo } from "react-icons/fa";
 
 const ResetButton: React.FC = () => {
   const handleReset = () => {
@@ -13,8 +14,12 @@ const ResetButton: React.FC = () => {
   };
 
   return (
-    <button onClick={handleReset} className="btn">
-      Réinitialiser toutes les données
+    <button
+      onClick={handleReset}
+      className="bg-red-500 text-white p-2 rounded flex items-center"
+    >
+      <FaRedo className="mr-2" />
+      Réinitialiser les données
     </button>
   );
 };

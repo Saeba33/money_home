@@ -26,7 +26,7 @@ body {
 
 .section-header-base {
   @apply flex items-center justify-between bg-blue-500 text-white p-3 cursor-pointer;
-  transition: border-radius 0.8s ease;
+  transition: border-radius 0.3s ease;
 }
 
 .section-header-open {
@@ -38,38 +38,27 @@ body {
 }
 
 .section-title {
-  @apply text-xl flex items-center;
+  @apply text-xl flex items-center pr-3;
+  text-wrap: balance;
 }
 
 .section-info {
   @apply text-white text-2xl ml-3;
 }
 
-.section-content-wrapper {
+.section-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.3s ease-out;
 }
 
-.section-content-wrapper.open {
-  max-height: 2000px; /* Ajustez cette valeur selon vos besoins */
+.section-content.open {
+  max-height: 100%;
 }
 
-.section-content {
-  @apply bg-white rounded-b-xl;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out,
-    padding 0.5s ease-in-out;
-  padding: 0 1rem;
+.section-content-inner {
+  @apply p-3 rounded-b-xl;
 }
-
-.section-content-wrapper.open .section-content {
-  opacity: 1;
-  transform: translateY(0);
-  padding: 1rem;
-}
-
 .section-field {
   @apply w-full flex gap-3 mb-2;
 }
@@ -93,4 +82,45 @@ body {
   @apply border rounded text-black p-2 text-sm;
 }
 
-/* Autres styles... */
+
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.custom-arrow-prev {
+  left: 10px;
+}
+
+.custom-arrow-next {
+  right: 10px;
+}
+
+.custom-dots {
+  position: absolute;
+  bottom: -40px;
+  width: 100%;
+}
+
+.custom-dot {
+  transition: background-color 0.3s ease;
+}
+
+.custom-dot:hover {
+  background-color: #666 !important;
+}
+
+.slick-prev,
+.slick-next {
+  display: none !important;
+}
+
+.select {
+  @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
+}

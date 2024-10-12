@@ -1,60 +1,48 @@
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
 import React from "react";
 import Slider from "react-slick";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
-  PieChart,
-  Pie,
-  BarChart,
   Bar,
-  LineChart,
+  BarChart,
+  Cell,
+  Legend,
   Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Cell,
 } from "recharts";
-import { useAppContext } from "@/contexts/AppContext";
-import SectionHeader from "@/components/ui/SectionHeader";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 
-const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#8884d8",
-  "#82ca9d",
-];
-
-const NextArrow = (props: any) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} cursor-pointer`}
-      style={{ ...style, display: "block", right: "10px" }}
-      onClick={onClick}
-    >
-      <FaChevronRight size={24} color="#333" />
-    </div>
-  );
+const COLORS = {
+  "Revenus personnels": "#0088FE",
+  "Revenus du foyer": "#00C49F",
+  "Dépenses personnelles": "#FFBB28",
+  "Dépenses du foyer": "#FF8042",
+  "Épargne personnelle": "#8884d8",
+  "Épargne du foyer": "#82ca9d",
 };
 
-const PrevArrow = (props: any) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} cursor-pointer`}
-      style={{ ...style, display: "block", left: "10px", zIndex: 1 }}
-      onClick={onClick}
-    >
-      <FaChevronLeft size={24} color="#333" />
-    </div>
-  );
-};
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: {
+      name: string;
+      value: number;
+    };
+  }>;
+  label?: string;
+}
 
 const ContributionChart: React.FC = () => {
-  const { contributions } = useAppContext();
+  const { contributions, people } = useAppContext();
 
   if (
     !contributions.contributions ||
@@ -66,21 +54,33 @@ const ContributionChart: React.FC = () => {
 
   const pieChartData = contributions.contributions.map((c) => ({
     name: c.name,
-    value: c.contributionFoyer,
+    value: c.totalContributions,
   }));
 
   const barChartData = contributions.contributions.map((c) => ({
     name: c.name,
-    Revenus: c.totalRevenue,
-    Dépenses: c.personalExpenses + c.contributionFoyer,
-    Épargne: c.personalSavings,
+    "Revenus personnels": c.personalIncome,
+    "Revenus du foyer": c.foyerIncome,
+    "Dépenses personnelles": c.personalExpenses,
+    "Dépenses du foyer": c.foyerExpenses,
+    "Épargne personnelle": c.personalSavings,
+    "Épargne du foyer": c.foyerSavings,
   }));
 
   const lineChartData = [
-    { name: "Revenus", value: contributions.summary.totalRevenues },
-    { name: "Dépenses", value: contributions.summary.totalExpenses },
-    { name: "Épargne", value: contributions.summary.totalSavings },
-    { name: "Balance", value: contributions.summary.totalBalance },
+    {
+      name: "Revenus totaux",
+      Montant: contributions.summary.totalGlobalIncome,
+    },
+    {
+      name: "Dépenses totales",
+      Montant: contributions.summary.totalGlobalExpenses,
+    },
+    {
+      name: "Épargne totale",
+      Montant: contributions.summary.totalGlobalSavings,
+    },
+    { name: "Balance", Montant: contributions.summary.totalBalance },
   ];
 
   const sliderSettings = {
@@ -89,25 +89,75 @@ const ContributionChart: React.FC = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    adaptiveHeight: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-    appendDots: (dots: any) => (
-      <div style={{ bottom: "-30px" }}>
-        <ul style={{ margin: "0px" }}> {dots} </ul>
-      </div>
-    ),
-    customPaging: (i: number) => (
-      <div
-        style={{
-          width: "10px",
-          height: "10px",
-          background: i === 0 ? "#333" : "#ccc",
-          borderRadius: "50%",
-          margin: "0 5px",
-        }}
-      />
-    ),
+    adaptiveHeight: false,
+    arrows: false,
+  };
+
+  // ... (le début du composant reste inchangé)
+
+  const CustomPieTooltip: React.FC<CustomTooltipProps> = ({
+    active,
+    payload,
+  }) => {
+    if (active && payload && payload.length) {
+      const totalContributions = pieChartData.reduce(
+        (sum, item) => sum + item.value,
+        0
+      );
+      const percentage = (
+        (payload[0].value / totalContributions) *
+        100
+      ).toFixed(2);
+      return (
+        <div className="custom-tooltip bg-white p-2 border border-gray-300">
+          <p className="label">{`${
+            payload[0].payload.name
+          } : ${payload[0].value.toFixed(2)} €`}</p>
+          <p className="intro">{`${percentage}%`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomBarTooltip: React.FC<CustomTooltipProps> = ({
+    active,
+    payload,
+    label,
+  }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-white p-2 border border-gray-300">
+          <p className="label">{`${label}`}</p>
+          {payload.map((pld) => (
+            <p
+              key={pld.name}
+              style={{ color: COLORS[pld.name as keyof typeof COLORS] }}
+            >
+              {`${pld.name} : ${pld.value.toFixed(2)} €`}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomLineTooltip: React.FC<CustomTooltipProps> = ({
+    active,
+    payload,
+    label,
+  }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-white p-2 border border-gray-300">
+          <p className="label">{`${label} : ${payload[0].value.toFixed(
+            2
+          )} €`}</p>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -116,72 +166,122 @@ const ContributionChart: React.FC = () => {
       infoTextKey="CHARTS"
       defaultOpenedSection={false}
     >
-      <div className="relative pb-10">
+      <div className="contribution-charts-container">
         <Slider {...sliderSettings}>
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-center">
-              Répartition des contributions au foyer
-            </h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={150}
-                  fill="#8884d8"
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          {people.length > 1 && (
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-center h-16">
+                Répartition des contributions au foyer
+              </h3>
+              <ResponsiveContainer width="100%" height={500}>
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={150}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          Object.values(COLORS)[
+                            index % Object.values(COLORS).length
+                          ]
+                        }
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomPieTooltip />} />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-center">
-              Comparaison des revenus, dépenses et épargnes par personne
+            <h3 className="text-xl font-semibold mb-4 text-center h-16">
+              Comparaison revenus, dépenses et épargnes
             </h3>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={500}>
               <BarChart data={barChartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip content={<CustomBarTooltip />} />
                 <Legend />
-                <Bar dataKey="Revenus" fill="#0088FE" />
-                <Bar dataKey="Dépenses" fill="#00C49F" />
-                <Bar dataKey="Épargne" fill="#FFBB28" />
+                <Bar
+                  dataKey="Revenus personnels"
+                  stackId="a"
+                  fill={COLORS["Revenus personnels"]}
+                />
+                <Bar
+                  dataKey="Revenus du foyer"
+                  stackId="a"
+                  fill={COLORS["Revenus du foyer"]}
+                />
+                <Bar
+                  dataKey="Dépenses personnelles"
+                  stackId="b"
+                  fill={COLORS["Dépenses personnelles"]}
+                />
+                <Bar
+                  dataKey="Dépenses du foyer"
+                  stackId="b"
+                  fill={COLORS["Dépenses du foyer"]}
+                />
+                <Bar
+                  dataKey="Épargne personnelle"
+                  stackId="b"
+                  fill={COLORS["Épargne personnelle"]}
+                />
+                <Bar
+                  dataKey="Épargne du foyer"
+                  stackId="b"
+                  fill={COLORS["Épargne du foyer"]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-center">
-              Aperçu global des finances
+            <h3 className="text-xl font-semibold mb-4 text-center h-16">
+              Aperçu global des finances du foyer
             </h3>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={500}>
               <LineChart data={lineChartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip content={<CustomLineTooltip />} />
                 <Legend />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                <Line type="monotone" dataKey="Montant" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </Slider>
       </div>
+      <style jsx global>{`
+        .contribution-charts-container {
+          padding-bottom: 40px;
+        }
+        .slick-dots {
+          bottom: -40px;
+        }
+        .slick-dots li button:before {
+          font-size: 12px;
+          color: #333;
+        }
+        .slick-dots li.slick-active button:before {
+          color: #0088fe;
+        }
+        .h-16 {
+          height: 4rem;
+        }
+      `}</style>
     </SectionHeader>
   );
 };

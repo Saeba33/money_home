@@ -1,4 +1,6 @@
-// Interfaces Financières //
+// Types de base
+
+export type DistributionMode = "égalitaire" | "proportionel" | "personnalisé";
 
 export interface FinancialItem {
   id: number;
@@ -8,91 +10,51 @@ export interface FinancialItem {
   comments: string;
 }
 
+// Interfaces pour les entités principales
+
 export interface Person {
   id: number;
   name: string;
   percentage: number;
-  revenues: Revenue[];
 }
 
-export interface Revenue {
-  id: number;
-  name: string;
-  amount: number | undefined;
-  assignedTo: string;
-  comments: string;
-}
+export type Income = FinancialItem;
+export type Expense = FinancialItem;
+export type Saving = FinancialItem;
 
-export interface Saving {
-  id: number;
-  name: string;
-  amount: number | undefined;
-  assignedTo: string;
-  comments: string;
-}
-
-export interface Expense {
-  id: number;
-  name: string;
-  amount: number | undefined;
-  assignedTo: string;
-  comments: string;
-}
-
-export type NewExpense = Partial<Expense>;
+// Interfaces pour les contributions et résumés
 
 export interface Contribution {
   name: string;
-  contributionFoyer: number;
+  personalIncome: number;
+  foyerIncome: number;
+  totalIncome: number;
   personalExpenses: number;
+  foyerExpenses: number;
+  totalExpenses: number;
   personalSavings: number;
-  totalRevenue: number;
+  foyerSavings: number;
+  totalSavings: number;
+  personalContributions: number;
+  foyerContributions: number;
+  totalContributions: number;
   balance: number;
   percentage: number;
 }
 
 export interface ContributionSummary {
-  totalRevenues: number;
-  totalExpenses: number;
-  totalSavings: number;
+  totalGlobalIncome: number;
+  totalFoyerIncome: number;
+  totalGlobalExpenses: number;
+  totalFoyerExpenses: number;
+  totalGlobalSavings: number;
+  totalFoyerSavings: number;
+  totalGlobalContributions: number;
+  totalFoyerContributions: number;
   totalBalance: number;
-  foyerExpenses: number;
-  foyerSavings: number;
 }
 
-export interface InfoText {
-  description: string;
-  example?: string;
-}
-
-export interface InfoTexts {
-  PEOPLE: InfoText;
-  REVENUES: InfoText;
-  SAVINGS: InfoText;
-  EXPENSES: InfoText;
-  DISTRIBUTION: InfoText;
-  CONTRIBUTIONS: InfoText;
-  CHARTS: InfoText;
-  ANALYSE: InfoText;
-}
-
-export type InfoTextKey = keyof InfoTexts;
-
-// Props de Composants //
-
-export interface SavingItemProps {
-  saving: Saving;
-  index: number;
-  isNew?: boolean;
-}
-
-export interface ContributionDetailsProps {
-  name: string;
-  contribution: Contribution;
-  revenues: Revenue[];
-  expenses: Expense[];
-  savings: Saving[];
-}
+// Interfaces pour les composants
 
 export interface SectionHeaderProps {
   title: string;
@@ -105,11 +67,7 @@ export interface InfoPopupProps {
   text: InfoText;
   isOpen: boolean;
   onClose: () => void;
-}
-
-export interface ContributionChartProps {
-  contributions: Contribution[];
-  summary: ContributionSummary;
+  title: string;
 }
 
 export interface ExpandCollapseButtonProps {
@@ -126,31 +84,33 @@ export interface ShowHideDetailsButtonProps {
   collapsedText: string;
 }
 
-
-// Types de Contexte //
+// Types pour le contexte de l'application
 
 export interface AppContextType {
-  // De usePeople
+  // Gestion des personnes
   people: Person[];
   addPerson: () => void;
   updatePerson: (id: number, updatedPerson: Partial<Person>) => void;
-  deletePerson: (id: number) => void;
+  initiateDeletePerson: (person: Person) => void;
+  confirmDeletePerson: (id: number) => void;
+  cancelDeletePerson: () => void;
   updatePersonPercentage: (id: number, value: number) => void;
   percentageWarning: string | null;
+  personToDelete: Person | null;
 
-  // De useExpenses
+  // Gestion des dépenses
   expenses: Expense[];
-  newExpense: NewExpense;
+  newExpense: Partial<Expense>;
   updateNewExpense: (updatedExpense: Partial<Expense>) => void;
   addExpense: () => void;
   updateExpense: (expenseId: number, updatedExpense: Partial<Expense>) => void;
   deleteExpense: (expenseId: number) => void;
 
-  // De useDistributionMode
+  // Gestion du mode de distribution
   distributionMode: DistributionMode;
   setDistributionMode: (mode: DistributionMode) => void;
 
-  // De useSavings
+  // Gestion des épargnes
   savings: Saving[];
   newSaving: Saving;
   updateNewSaving: (updatedSaving: Partial<Saving>) => void;
@@ -158,22 +118,55 @@ export interface AppContextType {
   updateSaving: (index: number, updatedSaving: Partial<Saving>) => void;
   deleteSaving: (index: number) => void;
 
-  // De useRevenues
-  revenues: Revenue[];
-  newRevenue: Revenue;
-  updateNewRevenue: (updatedRevenue: Partial<Revenue>) => void;
-  addRevenue: () => void;
-  updateRevenue: (revenueId: number, updatedRevenue: Partial<Revenue>) => void;
-  deleteRevenue: (revenueId: number) => void;
+  // Gestion des revenus
+  income: Income[];
+  newIncome: Income;
+  updateNewIncome: (updatedIncome: Partial<Income>) => void;
+  addIncome: () => void;
+  updateIncome: (incomeId: number, updatedIncome: Partial<Income>) => void;
+  deleteIncome: (incomeId: number) => void;
 
-  // De useContributions
+  // Gestion des contributions
   contributions: {
     contributions: Contribution[];
     summary: ContributionSummary;
     warning: string | null;
   };
+
+  isLoading: boolean;
 }
 
-// Types Divers //
+// Types pour les textes d'information
 
-export type DistributionMode = "égalitaire" | "proportionel" | "personnalisé";
+export interface InfoText {
+  description: string;
+  example?: string;
+}
+
+export interface InfoTexts {
+  PEOPLE: InfoText;
+  INCOME: InfoText;
+  SAVINGS: InfoText;
+  EXPENSES: InfoText;
+  DISTRIBUTION: InfoText;
+  CONTRIBUTIONS: InfoText;
+  CHARTS: InfoText;
+  ANALYSE: InfoText;
+}
+
+export interface PrivacyPolicyProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface DeletePersonModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  person: Person;
+  financialItems: (FinancialItem & {
+    type: "Dépense" | "Épargne" | "Revenu";
+  })[];
+  onConfirm: (action: "delete" | "reassign") => void;
+}
+
+export type InfoTextKey = keyof InfoTexts;

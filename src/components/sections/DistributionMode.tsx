@@ -18,9 +18,9 @@ const DistributionModeComponent: React.FC = () => {
       infoTextKey="DISTRIBUTION"
       defaultOpenedSection={true}
     >
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row gap-2 justify-start items-center">
         {modes.map((mode) => (
-          <label key={mode} className="flex items-center">
+          <label key={mode} className="flex">
             <input
               type="radio"
               value={mode}

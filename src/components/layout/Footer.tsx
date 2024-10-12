@@ -1,28 +1,24 @@
 import React, { useState } from "react";
-import PrivacyPolicyModal from "@/components/layout/PrivacyPolicy";
+import PrivacyPolicy from "@/components/layout/PrivacyPolicy";
 
 const Footer: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
-    <footer className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto text-center">
-        <p>
-          &copy; {new Date().getFullYear()} BEA. Tous droits
-          réservés.
+    <footer className="bg-gray-800 text-white">
+      <div className="p-4 flex items-center justify-between">
+        <p className="text-sm">
+          &copy; {new Date().getFullYear()} - BEA
         </p>
         <button
           onClick={() => setModalOpen(true)}
-          className="mt-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="text-sm text-blue-300 hover:text-blue-100 transition-colors duration-200 underline"
         >
           Politique de confidentialité
         </button>
       </div>
 
-      <PrivacyPolicyModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      <PrivacyPolicy isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </footer>
   );
 };

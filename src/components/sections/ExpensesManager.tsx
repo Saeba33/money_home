@@ -26,13 +26,15 @@ const ExpensesManager: React.FC = () => {
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom de la dépense"
+            aria-label="Nom de la dépense"
           />
           <select
             value={newExpense.assignedTo}
             onChange={(e) =>
               updateNewExpense({ ...newExpense, assignedTo: e.target.value })
             }
-            className="input w-full sm:w-auto"
+            className="select"
+            aria-label="Assigné à"
           >
             <option value="foyer">Foyer</option>
             {people.map((person, idx) => (
@@ -50,8 +52,9 @@ const ExpensesManager: React.FC = () => {
                 amount: Number(e.target.value),
               })
             }
-            className="input w-full sm:w-32"
+            className="input"
             placeholder="Montant"
+            aria-label="Montant"
           />
           <input
             type="text"
@@ -61,8 +64,13 @@ const ExpensesManager: React.FC = () => {
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
+            aria-label="Commentaires"
           />
-          <button onClick={addExpense} className="btn">
+          <button
+            onClick={addExpense}
+            className="btn"
+            aria-label="Ajouter une dépense"
+          >
             Ajouter
           </button>
         </div>
@@ -94,6 +102,7 @@ const ExpensesManager: React.FC = () => {
                   })
                 }
                 className="input flex-grow min-w-[200px]"
+                aria-label="Nom de la dépense"
               />
               <select
                 value={expense.assignedTo}
@@ -103,7 +112,8 @@ const ExpensesManager: React.FC = () => {
                     assignedTo: e.target.value,
                   })
                 }
-                className="input w-full sm:w-auto"
+                className="select"
+                aria-label="Assigné à"
               >
                 <option value="foyer">Foyer</option>
                 {people.map((person, idx) => (
@@ -122,6 +132,8 @@ const ExpensesManager: React.FC = () => {
                   })
                 }
                 className="input w-full sm:w-32"
+                placeholder="Montant"
+                aria-label="Montant"
               />
               <input
                 type="text"
@@ -134,10 +146,12 @@ const ExpensesManager: React.FC = () => {
                 }
                 className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
                 placeholder="Commentaires"
+                aria-label="Commentaires"
               />
               <button
                 onClick={() => deleteExpense(expense.id)}
                 className="can"
+                aria-label="Supprimer la dépense"
               >
                 <FaRegTrashCan />
               </button>

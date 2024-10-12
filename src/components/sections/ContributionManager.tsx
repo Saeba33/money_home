@@ -1,44 +1,59 @@
-import React, { useState } from "react";
-import { useAppContext } from "@/contexts/AppContext";
+import ShowHideDetailsButton from "@/components/ui/DetailsButton";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ExpandCollapseButton from "@/components/ui/SeeMoreButton";
-import ShowHideDetailsButton from "@/components/ui/DetailsButton";
+import { useAppContext } from "@/contexts/AppContext";
 import {
   Contribution,
   ContributionSummary,
   FinancialItem,
 } from "@/types/types";
-import { useHasFinancialData } from "@/hooks/useHasFinancialData";
+import React, { useState } from "react";
+
+const summaryKeys: (keyof ContributionSummary)[] = [
+  "totalGlobalIncome",
+  "totalGlobalExpenses",
+  "totalGlobalSavings",
+  "totalGlobalContributions",
+  "totalBalance",
+];
 
 const summaryTranslations: Record<keyof ContributionSummary, string> = {
-  totalRevenues: "Revenus totaux",
-  totalExpenses: "Dépenses totales",
-  totalSavings: "Épargne totale",
+  totalGlobalIncome: "Revenus totaux",
+  totalGlobalExpenses: "Dépenses totales",
+  totalGlobalSavings: "Épargne totale",
+  totalGlobalContributions: "Contributions totales",
   totalBalance: "Balance totale",
-  foyerExpenses: "Dépenses du foyer",
-  foyerSavings: "Épargne du foyer",
+  totalFoyerIncome: "Revenus du foyer",
+  totalFoyerExpenses: "Dépenses du foyer",
+  totalFoyerSavings: "Épargne du foyer",
+  totalFoyerContributions: "Contributions du foyer",
 };
 
-const contributionTranslations: Record<string, string> = {
-  totalRevenue: "Revenu total",
-  contributionFoyer: "Contribution au foyer",
+const contributionTranslations: Record<keyof Contribution, string> = {
+  name: "Nom",
+  personalIncome: "Revenus personnels",
+  foyerIncome: "Revenus du foyer",
+  totalIncome: "Revenus totaux",
   personalExpenses: "Dépenses personnelles",
+  foyerExpenses: "Dépenses du foyer",
+  totalExpenses: "Dépenses totales",
   personalSavings: "Épargne personnelle",
+  foyerSavings: "Épargne du foyer",
+  totalSavings: "Épargne totale",
+  personalContributions: "Contributions personnelles",
+  foyerContributions: "Contributions au foyer",
+  totalContributions: "Contributions totales",
   balance: "Balance",
+  percentage: "Pourcentage",
 };
 
 const ContributionManager: React.FC = () => {
-  const { contributions, expenses, savings, revenues } = useAppContext();
-  const { hasAnySignificantData } = useHasFinancialData();
+  const { contributions, people, expenses, savings, income } = useAppContext();
   const [showPersonalContributions, setShowPersonalContributions] =
     useState(false);
   const [expandedContributions, setExpandedContributions] = useState<string[]>(
     []
   );
-
-  if (!hasAnySignificantData) {
-    return null;
-  }
 
   const togglePersonalContributions = () =>
     setShowPersonalContributions((prev) => !prev);
@@ -55,75 +70,24 @@ const ContributionManager: React.FC = () => {
       ? "text-red-600"
       : "text-black";
 
-  const hasDetails = (name: string, contribution: Contribution) => {
-    const hasPersonalItems = [...revenues, ...expenses, ...savings].some(
-      (item) => item.assignedTo === name && item.amount !== 0
-    );
-    const hasFoyerItems = [...revenues, ...expenses, ...savings].some(
-      (item) =>
-        item.assignedTo === "foyer" &&
-        item.amount !== 0 &&
-        contribution.percentage > 0
-    );
-    return hasPersonalItems || hasFoyerItems;
-  };
-
   const renderDetailedItems = (
     items: FinancialItem[],
-    contribution: Contribution
+    personName: string,
+    percentage: number
   ) => {
-    return items
-      .filter((item) => {
-        const amount =
-          item.assignedTo === "foyer"
-            ? ((item.amount || 0) * contribution.percentage) / 100
-            : item.amount;
-        return amount !== 0 && !isNaN(amount || 0);
-      })
-      .map((item) => {
-        const amount =
-          item.assignedTo === "foyer"
-            ? ((item.amount || 0) * contribution.percentage) / 100
-            : item.amount || 0;
-        return (
-          <li key={item.id}>
-            {item.name}: {amount.toFixed(2)} €
-            {item.assignedTo === "foyer" &&
-              ` (foyer - ${contribution.percentage.toFixed(1)}% de ${
-                item.amount
-              } €)`}
-          </li>
-        );
-      });
-  };
-
-  const renderDetails = (name: string, contribution: Contribution) => {
-    const renderSection = (title: string, items: FinancialItem[]) => {
-      const detailedItems = renderDetailedItems(items, contribution);
-      return detailedItems.length > 0 ? (
-        <>
-          <h5 className="font-medium mt-2">{title}</h5>
-          <ul>{detailedItems}</ul>
-        </>
-      ) : null;
-    };
-
-    return (
-      <div className="mt-2">
-        {renderSection("Revenus détaillés :", [
-          ...revenues.filter((r) => r.assignedTo === name),
-          ...revenues.filter((r) => r.assignedTo === "foyer"),
-        ])}
-        {renderSection("Dépenses détaillées :", [
-          ...expenses.filter((e) => e.assignedTo === name),
-          ...expenses.filter((e) => e.assignedTo === "foyer"),
-        ])}
-        {renderSection("Épargnes détaillées :", [
-          ...savings.filter((s) => s.assignedTo === name),
-          ...savings.filter((s) => s.assignedTo === "foyer"),
-        ])}
-      </div>
-    );
+    return items.map((item) => {
+      const amount =
+        item.assignedTo === "foyer"
+          ? (item.amount || 0) * (percentage / 100)
+          : item.amount || 0;
+      return (
+        <div key={item.id}>
+          {item.name}: {amount.toFixed(2)} €
+          {item.assignedTo === "foyer" &&
+            ` (${percentage}% de ${item.amount} €)`}
+        </div>
+      );
+    });
   };
 
   return (
@@ -139,26 +103,19 @@ const ContributionManager: React.FC = () => {
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Résumé global</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {(
-            Object.keys(contributions.summary) as Array<
-              keyof ContributionSummary
+          {summaryKeys.map((key) => (
+            <div
+              key={key}
+              className={
+                key === "totalBalance"
+                  ? getBalanceColor(contributions.summary[key])
+                  : ""
+              }
             >
-          ).map(
-            (key) =>
-              contributions.summary[key] > 0 && (
-                <div
-                  key={key}
-                  className={
-                    key === "totalBalance"
-                      ? getBalanceColor(contributions.summary[key])
-                      : ""
-                  }
-                >
-                  {summaryTranslations[key]}:{" "}
-                  {contributions.summary[key].toFixed(2)} €
-                </div>
-              )
-          )}
+              {summaryTranslations[key]}:{" "}
+              {contributions.summary[key].toFixed(2)} €
+            </div>
+          ))}
         </div>
       </div>
 
@@ -166,67 +123,92 @@ const ContributionManager: React.FC = () => {
         <ExpandCollapseButton
           isExpanded={showPersonalContributions}
           onClick={togglePersonalContributions}
-          expandedText="Voir moins de détails"
-          collapsedText="Voir plus de détails"
+          expandedText="Voir moins"
+          collapsedText="Voir plus"
         />
       )}
 
       {showPersonalContributions && (
         <div>
           <h3 className="text-lg font-semibold mb-2">
-            Contributions individuelles
+            Répartition {people.length > 1 ? "individuelle" : "individuelle"}
           </h3>
           {contributions.contributions.map((contribution: Contribution) => (
             <div
               key={contribution.name}
               className="mb-4 p-4 bg-gray-100 rounded-lg"
             >
-              <h4 className="font-medium mb-2">{contribution.name}</h4>
+              <h4 className="font-medium mb-2">
+                {contribution.name} ({contribution.percentage.toFixed(1)}%)
+              </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {(
-                  [
-                    "totalRevenue",
-                    "contributionFoyer",
-                    "personalExpenses",
-                    "personalSavings",
-                    "balance",
-                  ] as const
-                ).map(
-                  (key) =>
-                    contribution[key] !== 0 && (
-                      <div
-                        key={key}
-                        className={
-                          key === "balance"
-                            ? getBalanceColor(contribution[key])
-                            : ""
-                        }
-                      >
-                        {contributionTranslations[key]}:{" "}
-                        {contribution[key].toFixed(2)} €
-                        {key === "contributionFoyer" &&
-                          ` (${contribution.percentage.toFixed(1)}%)`}
-                      </div>
-                    )
-                )}
+                  Object.keys(contributionTranslations) as Array<
+                    keyof Contribution
+                  >
+                )
+                  .filter(
+                    (key) =>
+                      key !== "name" &&
+                      key !== "percentage" &&
+                      typeof contribution[key] === "number"
+                  )
+                  .map((key) => (
+                    <div
+                      key={key}
+                      className={
+                        key === "balance"
+                          ? getBalanceColor(contribution[key] as number)
+                          : ""
+                      }
+                    >
+                      {contributionTranslations[key]}:{" "}
+                      {typeof contribution[key] === "number"
+                        ? (contribution[key] as number).toFixed(2)
+                        : contribution[key]}{" "}
+                      €
+                    </div>
+                  ))}
               </div>
-              {hasDetails(contribution.name, contribution) ? (
-                <>
-                  <ShowHideDetailsButton
-                    isExpanded={expandedContributions.includes(
-                      contribution.name
-                    )}
-                    onClick={() => toggleContributionDetails(contribution.name)}
-                    expandedText="Masquer le détail"
-                    collapsedText="Afficher le détail"
-                  />
-                  {expandedContributions.includes(contribution.name) &&
-                    renderDetails(contribution.name, contribution)}
-                </>
-              ) : (
-                <p className="mt-2 text-sm text-gray-500">
-                  Aucun détail disponible
-                </p>
+              <ShowHideDetailsButton
+                isExpanded={expandedContributions.includes(contribution.name)}
+                onClick={() => toggleContributionDetails(contribution.name)}
+                expandedText="Masquer le détail"
+                collapsedText="Afficher le détail"
+              />
+              {expandedContributions.includes(contribution.name) && (
+                <div className="mt-4">
+                  <h5 className="font-medium">Revenus</h5>
+                  {renderDetailedItems(
+                    income.filter(
+                      (r) =>
+                        r.assignedTo === contribution.name ||
+                        r.assignedTo === "foyer"
+                    ),
+                    contribution.name,
+                    contribution.percentage
+                  )}
+                  <h5 className="font-medium mt-2">Épargne</h5>
+                  {renderDetailedItems(
+                    savings.filter(
+                      (s) =>
+                        s.assignedTo === contribution.name ||
+                        s.assignedTo === "foyer"
+                    ),
+                    contribution.name,
+                    contribution.percentage
+                  )}
+                  <h5 className="font-medium mt-2">Dépenses</h5>
+                  {renderDetailedItems(
+                    expenses.filter(
+                      (e) =>
+                        e.assignedTo === contribution.name ||
+                        e.assignedTo === "foyer"
+                    ),
+                    contribution.name,
+                    contribution.percentage
+                  )}
+                </div>
               )}
             </div>
           ))}
