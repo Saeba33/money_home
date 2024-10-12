@@ -1,35 +1,31 @@
-import ShowHideDetailsButton from "@/components/ui/DetailsButton";
+import React, { useState } from "react";
+import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ExpandCollapseButton from "@/components/ui/SeeMoreButton";
-import { useAppContext } from "@/contexts/AppContext";
-import {
-  Contribution,
-  ContributionSummary,
-  FinancialItem,
-} from "@/types/types";
-import React, { useState } from "react";
+import ShowHideDetailsButton from "@/components/ui/DetailsButton";
+import { Budget, BudgetSummary, FinancialItem } from "@/types/types";
 
-const summaryKeys: (keyof ContributionSummary)[] = [
+const summaryKeys: (keyof BudgetSummary)[] = [
   "totalGlobalIncome",
   "totalGlobalExpenses",
   "totalGlobalSavings",
-  "totalGlobalContributions",
+  "totalGlobalOutflows",
   "totalBalance",
 ];
 
-const summaryTranslations: Record<keyof ContributionSummary, string> = {
+const summaryTranslations: Record<keyof BudgetSummary, string> = {
   totalGlobalIncome: "Revenus totaux",
   totalGlobalExpenses: "Dépenses totales",
   totalGlobalSavings: "Épargne totale",
-  totalGlobalContributions: "Contributions totales",
+  totalGlobalOutflows: "Dépenses et épargne totales",
   totalBalance: "Balance totale",
   totalFoyerIncome: "Revenus du foyer",
   totalFoyerExpenses: "Dépenses du foyer",
   totalFoyerSavings: "Épargne du foyer",
-  totalFoyerContributions: "Contributions du foyer",
+  totalFoyerOutflows: "Dépenses et épargne du foyer",
 };
 
-const contributionTranslations: Record<keyof Contribution, string> = {
+const budgetTranslations: Record<keyof Budget, string> = {
   name: "Nom",
   personalIncome: "Revenus personnels",
   foyerIncome: "Revenus du foyer",
@@ -40,25 +36,21 @@ const contributionTranslations: Record<keyof Contribution, string> = {
   personalSavings: "Épargne personnelle",
   foyerSavings: "Épargne du foyer",
   totalSavings: "Épargne totale",
-  personalContributions: "Contributions personnelles",
-  foyerContributions: "Contributions au foyer",
-  totalContributions: "Contributions totales",
+  personalOutflows: "Dépenses et épargne personnelles",
+  foyerOutflows: "Dépenses et épargne du foyer",
+  totalOutflows: "Dépenses et épargne totales",
   balance: "Balance",
   percentage: "Pourcentage",
 };
 
-const ContributionManager: React.FC = () => {
-  const { contributions, people, expenses, savings, income } = useAppContext();
-  const [showPersonalContributions, setShowPersonalContributions] =
-    useState(false);
-  const [expandedContributions, setExpandedContributions] = useState<string[]>(
-    []
-  );
+const BudgetManager: React.FC = () => {
+  const { budgets, people, expenses, savings, income } = useAppContext();
+  const [showPersonalBudgets, setShowPersonalBudgets] = useState(false);
+  const [expandedBudgets, setExpandedBudgets] = useState<string[]>([]);
 
-  const togglePersonalContributions = () =>
-    setShowPersonalContributions((prev) => !prev);
-  const toggleContributionDetails = (name: string) => {
-    setExpandedContributions((prev) =>
+  const togglePersonalBudgets = () => setShowPersonalBudgets((prev) => !prev);
+  const toggleBudgetDetails = (name: string) => {
+    setExpandedBudgets((prev) =>
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
     );
   };
@@ -84,7 +76,7 @@ const ContributionManager: React.FC = () => {
         <div key={item.id}>
           {item.name}: {amount.toFixed(2)} €
           {item.assignedTo === "foyer" &&
-            ` (${percentage}% de ${item.amount} €)`}
+            ` (${percentage.toFixed(1)}% de ${item.amount} €)`}
         </div>
       );
     });
@@ -92,13 +84,11 @@ const ContributionManager: React.FC = () => {
 
   return (
     <SectionHeader
-      title="Contributions"
-      infoTextKey="CONTRIBUTIONS"
+      title="Budget"
+      infoTextKey="BUDGET"
       defaultOpenedSection={true}
     >
-      {contributions.warning && (
-        <div className="warning">{contributions.warning}</div>
-      )}
+      {budgets.warning && <div className="warning">{budgets.warning}</div>}
 
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Résumé global</h3>
@@ -108,105 +98,94 @@ const ContributionManager: React.FC = () => {
               key={key}
               className={
                 key === "totalBalance"
-                  ? getBalanceColor(contributions.summary[key])
+                  ? getBalanceColor(budgets.summary[key])
                   : ""
               }
             >
-              {summaryTranslations[key]}:{" "}
-              {contributions.summary[key].toFixed(2)} €
+              {summaryTranslations[key]}: {budgets.summary[key].toFixed(2)} €
             </div>
           ))}
         </div>
       </div>
 
-      {contributions.contributions.length > 0 && (
+      {budgets.budgets.length > 0 && (
         <ExpandCollapseButton
-          isExpanded={showPersonalContributions}
-          onClick={togglePersonalContributions}
+          isExpanded={showPersonalBudgets}
+          onClick={togglePersonalBudgets}
           expandedText="Voir moins"
           collapsedText="Voir plus"
         />
       )}
 
-      {showPersonalContributions && (
+      {showPersonalBudgets && (
         <div>
           <h3 className="text-lg font-semibold mb-2">
             Répartition {people.length > 1 ? "individuelle" : "individuelle"}
           </h3>
-          {contributions.contributions.map((contribution: Contribution) => (
-            <div
-              key={contribution.name}
-              className="mb-4 p-4 bg-gray-100 rounded-lg"
-            >
+          {budgets.budgets.map((budget: Budget) => (
+            <div key={budget.name} className="mb-4 p-4 bg-gray-100 rounded-lg">
               <h4 className="font-medium mb-2">
-                {contribution.name} ({contribution.percentage.toFixed(1)}%)
+                {budget.name} ({budget.percentage.toFixed(1)}%)
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {(
-                  Object.keys(contributionTranslations) as Array<
-                    keyof Contribution
-                  >
-                )
+                {(Object.keys(budgetTranslations) as Array<keyof Budget>)
                   .filter(
                     (key) =>
                       key !== "name" &&
                       key !== "percentage" &&
-                      typeof contribution[key] === "number"
+                      typeof budget[key] === "number"
                   )
                   .map((key) => (
                     <div
                       key={key}
                       className={
                         key === "balance"
-                          ? getBalanceColor(contribution[key] as number)
+                          ? getBalanceColor(budget[key] as number)
                           : ""
                       }
                     >
-                      {contributionTranslations[key]}:{" "}
-                      {typeof contribution[key] === "number"
-                        ? (contribution[key] as number).toFixed(2)
-                        : contribution[key]}{" "}
+                      {budgetTranslations[key]}:{" "}
+                      {typeof budget[key] === "number"
+                        ? (budget[key] as number).toFixed(2)
+                        : budget[key]}{" "}
                       €
                     </div>
                   ))}
               </div>
               <ShowHideDetailsButton
-                isExpanded={expandedContributions.includes(contribution.name)}
-                onClick={() => toggleContributionDetails(contribution.name)}
+                isExpanded={expandedBudgets.includes(budget.name)}
+                onClick={() => toggleBudgetDetails(budget.name)}
                 expandedText="Masquer le détail"
                 collapsedText="Afficher le détail"
               />
-              {expandedContributions.includes(contribution.name) && (
+              {expandedBudgets.includes(budget.name) && (
                 <div className="mt-4">
                   <h5 className="font-medium">Revenus</h5>
                   {renderDetailedItems(
                     income.filter(
                       (r) =>
-                        r.assignedTo === contribution.name ||
-                        r.assignedTo === "foyer"
+                        r.assignedTo === budget.name || r.assignedTo === "foyer"
                     ),
-                    contribution.name,
-                    contribution.percentage
+                    budget.name,
+                    budget.percentage
                   )}
                   <h5 className="font-medium mt-2">Épargne</h5>
                   {renderDetailedItems(
                     savings.filter(
                       (s) =>
-                        s.assignedTo === contribution.name ||
-                        s.assignedTo === "foyer"
+                        s.assignedTo === budget.name || s.assignedTo === "foyer"
                     ),
-                    contribution.name,
-                    contribution.percentage
+                    budget.name,
+                    budget.percentage
                   )}
                   <h5 className="font-medium mt-2">Dépenses</h5>
                   {renderDetailedItems(
                     expenses.filter(
                       (e) =>
-                        e.assignedTo === contribution.name ||
-                        e.assignedTo === "foyer"
+                        e.assignedTo === budget.name || e.assignedTo === "foyer"
                     ),
-                    contribution.name,
-                    contribution.percentage
+                    budget.name,
+                    budget.percentage
                   )}
                 </div>
               )}
@@ -218,4 +197,4 @@ const ContributionManager: React.FC = () => {
   );
 };
 
-export default ContributionManager;
+export default BudgetManager;

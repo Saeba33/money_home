@@ -82,25 +82,11 @@ body {
   @apply border rounded text-black p-2 text-sm;
 }
 
-
-.custom-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  padding: 10px;
+.select {
+  @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
 }
 
-.custom-arrow-prev {
-  left: 10px;
-}
 
-.custom-arrow-next {
-  right: 10px;
-}
 
 .custom-dots {
   position: absolute;
@@ -116,11 +102,5 @@ body {
   background-color: #666 !important;
 }
 
-.slick-prev,
-.slick-next {
-  display: none !important;
-}
 
-.select {
-  @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
-}
+

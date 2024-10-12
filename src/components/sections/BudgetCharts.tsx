@@ -1,5 +1,3 @@
-import SectionHeader from "@/components/ui/SectionHeader";
-import { useAppContext } from "@/contexts/AppContext";
 import React from "react";
 import Slider from "react-slick";
 import {
@@ -18,6 +16,8 @@ import {
 } from "recharts";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import { useAppContext } from "@/contexts/AppContext";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const COLORS = {
   "Revenus personnels": "#0088FE",
@@ -41,46 +41,42 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-const ContributionChart: React.FC = () => {
-  const { contributions, people } = useAppContext();
+const BudgetCharts: React.FC = () => {
+  const { budgets, people } = useAppContext();
 
-  if (
-    !contributions.contributions ||
-    contributions.contributions.length === 0 ||
-    !contributions.summary
-  ) {
+  if (!budgets.budgets || budgets.budgets.length === 0 || !budgets.summary) {
     return <div>Aucune donnée disponible pour afficher les graphiques.</div>;
   }
 
-  const pieChartData = contributions.contributions.map((c) => ({
-    name: c.name,
-    value: c.totalContributions,
+  const pieChartData = budgets.budgets.map((b) => ({
+    name: b.name,
+    value: b.totalOutflows,
   }));
 
-  const barChartData = contributions.contributions.map((c) => ({
-    name: c.name,
-    "Revenus personnels": c.personalIncome,
-    "Revenus du foyer": c.foyerIncome,
-    "Dépenses personnelles": c.personalExpenses,
-    "Dépenses du foyer": c.foyerExpenses,
-    "Épargne personnelle": c.personalSavings,
-    "Épargne du foyer": c.foyerSavings,
+  const barChartData = budgets.budgets.map((b) => ({
+    name: b.name,
+    "Revenus personnels": b.personalIncome,
+    "Revenus du foyer": b.foyerIncome,
+    "Dépenses personnelles": b.personalExpenses,
+    "Dépenses du foyer": b.foyerExpenses,
+    "Épargne personnelle": b.personalSavings,
+    "Épargne du foyer": b.foyerSavings,
   }));
 
   const lineChartData = [
     {
       name: "Revenus totaux",
-      Montant: contributions.summary.totalGlobalIncome,
+      Montant: budgets.summary.totalGlobalIncome,
     },
     {
       name: "Dépenses totales",
-      Montant: contributions.summary.totalGlobalExpenses,
+      Montant: budgets.summary.totalGlobalExpenses,
     },
     {
       name: "Épargne totale",
-      Montant: contributions.summary.totalGlobalSavings,
+      Montant: budgets.summary.totalGlobalSavings,
     },
-    { name: "Balance", Montant: contributions.summary.totalBalance },
+    { name: "Balance", Montant: budgets.summary.totalBalance },
   ];
 
   const sliderSettings = {
@@ -93,21 +89,16 @@ const ContributionChart: React.FC = () => {
     arrows: false,
   };
 
-  // ... (le début du composant reste inchangé)
-
   const CustomPieTooltip: React.FC<CustomTooltipProps> = ({
     active,
     payload,
   }) => {
     if (active && payload && payload.length) {
-      const totalContributions = pieChartData.reduce(
+      const totalOutflows = pieChartData.reduce(
         (sum, item) => sum + item.value,
         0
       );
-      const percentage = (
-        (payload[0].value / totalContributions) *
-        100
-      ).toFixed(2);
+      const percentage = ((payload[0].value / totalOutflows) * 100).toFixed(2);
       return (
         <div className="custom-tooltip bg-white p-2 border border-gray-300">
           <p className="label">{`${
@@ -162,16 +153,16 @@ const ContributionChart: React.FC = () => {
 
   return (
     <SectionHeader
-      title="Graphiques des Contributions"
+      title="Graphiques du Budget"
       infoTextKey="CHARTS"
       defaultOpenedSection={false}
     >
-      <div className="contribution-charts-container">
+      <div className="budget-charts-container">
         <Slider {...sliderSettings}>
           {people.length > 1 && (
             <div>
               <h3 className="text-xl font-semibold mb-4 text-center h-16">
-                Répartition des contributions au foyer
+                Répartition des dépenses et épargnes au foyer
               </h3>
               <ResponsiveContainer width="100%" height={500}>
                 <PieChart>
@@ -265,7 +256,7 @@ const ContributionChart: React.FC = () => {
         </Slider>
       </div>
       <style jsx global>{`
-        .contribution-charts-container {
+        .budget-charts-container {
           padding-bottom: 40px;
         }
         .slick-dots {
@@ -286,4 +277,4 @@ const ContributionChart: React.FC = () => {
   );
 };
 
-export default ContributionChart;
+export default BudgetCharts;

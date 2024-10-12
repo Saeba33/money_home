@@ -1,7 +1,7 @@
 // Types de base
-
 export type DistributionMode = "égalitaire" | "proportionel" | "personnalisé";
 
+// Interfaces pour les entités principales
 export interface FinancialItem {
   id: number;
   name: string;
@@ -9,8 +9,6 @@ export interface FinancialItem {
   assignedTo: string;
   comments: string;
 }
-
-// Interfaces pour les entités principales
 
 export interface Person {
   id: number;
@@ -22,9 +20,8 @@ export type Income = FinancialItem;
 export type Expense = FinancialItem;
 export type Saving = FinancialItem;
 
-// Interfaces pour les contributions et résumés
-
-export interface Contribution {
+// Interfaces pour le budget et résumés
+export interface Budget {
   name: string;
   personalIncome: number;
   foyerIncome: number;
@@ -35,27 +32,26 @@ export interface Contribution {
   personalSavings: number;
   foyerSavings: number;
   totalSavings: number;
-  personalContributions: number;
-  foyerContributions: number;
-  totalContributions: number;
+  personalOutflows: number;
+  foyerOutflows: number;
+  totalOutflows: number;
   balance: number;
   percentage: number;
 }
 
-export interface ContributionSummary {
+export interface BudgetSummary {
   totalGlobalIncome: number;
   totalFoyerIncome: number;
   totalGlobalExpenses: number;
   totalFoyerExpenses: number;
   totalGlobalSavings: number;
   totalFoyerSavings: number;
-  totalGlobalContributions: number;
-  totalFoyerContributions: number;
+  totalGlobalOutflows: number;
+  totalFoyerOutflows: number;
   totalBalance: number;
 }
 
-// Interfaces pour les composants
-
+// Interfaces pour les composants UI
 export interface SectionHeaderProps {
   title: string;
   infoTextKey: InfoTextKey;
@@ -84,8 +80,22 @@ export interface ShowHideDetailsButtonProps {
   collapsedText: string;
 }
 
-// Types pour le contexte de l'application
+export interface PrivacyPolicyProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
+export interface DeletePersonModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  person: Person;
+  financialItems: (FinancialItem & {
+    type: "Dépense" | "Épargne" | "Revenu";
+  })[];
+  onConfirm: (action: "delete" | "reassign") => void;
+}
+
+// Types pour le contexte de l'application
 export interface AppContextType {
   // Gestion des personnes
   people: Person[];
@@ -126,10 +136,10 @@ export interface AppContextType {
   updateIncome: (incomeId: number, updatedIncome: Partial<Income>) => void;
   deleteIncome: (incomeId: number) => void;
 
-  // Gestion des contributions
-  contributions: {
-    contributions: Contribution[];
-    summary: ContributionSummary;
+  // Gestion du budget
+  budgets: {
+    budgets: Budget[];
+    summary: BudgetSummary;
     warning: string | null;
   };
 
@@ -137,7 +147,6 @@ export interface AppContextType {
 }
 
 // Types pour les textes d'information
-
 export interface InfoText {
   description: string;
   example?: string;
@@ -149,24 +158,9 @@ export interface InfoTexts {
   SAVINGS: InfoText;
   EXPENSES: InfoText;
   DISTRIBUTION: InfoText;
-  CONTRIBUTIONS: InfoText;
+  BUDGET: InfoText;
   CHARTS: InfoText;
   ANALYSE: InfoText;
-}
-
-export interface PrivacyPolicyProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export interface DeletePersonModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  person: Person;
-  financialItems: (FinancialItem & {
-    type: "Dépense" | "Épargne" | "Revenu";
-  })[];
-  onConfirm: (action: "delete" | "reassign") => void;
 }
 
 export type InfoTextKey = keyof InfoTexts;

@@ -1,5 +1,5 @@
 import { useAppContext } from "@/contexts/AppContext";
-import { Contribution } from "@/types/types";
+import { Budget } from "@/types/types";
 import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { FaFileExport } from "react-icons/fa";
@@ -8,51 +8,49 @@ import ExportModal from "./ExportModal";
 const ExportButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
-    contributions: { contributions },
+    budgets: { budgets },
     distributionMode,
   } = useAppContext();
 
   const exportToPDF = (
-    exportContributionManager: boolean,
-    exportContributionChart: boolean
+    exportBudgetManager: boolean,
+    exportBudgetChart: boolean
   ) => {
     const doc = new jsPDF();
 
-    if (exportContributionManager) {
-      doc.text("Rapport des Contributions", 10, 10);
+    if (exportBudgetManager) {
+      doc.text("Rapport du Budget", 10, 10);
       doc.text(`Mode de distribution : ${distributionMode}`, 10, 20);
 
-      contributions.forEach((contribution: Contribution, index: number) => {
+      budgets.forEach((budget: Budget, index: number) => {
         const yPos = 30 + index * 40;
-        doc.text(`${contribution.name}:`, 10, yPos);
+        doc.text(`${budget.name}:`, 10, yPos);
         doc.text(
-          `Contribution au foyer: ${contribution.contributionFoyer.toFixed(
+          `Dépenses et épargne du foyer: ${budget.foyerOutflows.toFixed(
             2
-          )} € (${contribution.percentage.toFixed(2)}%)`,
+          )} € (${budget.percentage.toFixed(2)}%)`,
           20,
           yPos + 10
         );
         doc.text(
-          `Dépenses personnelles: ${contribution.personalExpenses.toFixed(
-            2
-          )} €`,
+          `Dépenses personnelles: ${budget.personalExpenses.toFixed(2)} €`,
           20,
           yPos + 20
         );
         doc.text(
-          `Revenus totaux: ${contribution.totalIncome.toFixed(2)} €`,
+          `Revenus totaux: ${budget.totalIncome.toFixed(2)} €`,
           20,
           yPos + 30
         );
       });
     }
 
-    if (exportContributionChart) {
+    if (exportBudgetChart) {
       // Ajoutez ici la logique pour exporter les graphiques
       // Vous devrez probablement utiliser une bibliothèque comme html2canvas pour capturer les graphiques
     }
 
-    doc.save("contributions-report.pdf");
+    doc.save("budget-report.pdf");
     setIsModalOpen(false);
   };
 

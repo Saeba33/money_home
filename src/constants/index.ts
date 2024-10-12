@@ -78,7 +78,7 @@ export const INFO_TEXTS = {
     example: `\nNota Bene : les dépenses personnelles (affectées à une personne) ne sont pas impactées par le mode de répartition. Seules les dépenses dites communes (affectées au "foyer") sont concernées.`,
   },
 
-  CONTRIBUTIONS: {
+  BUDGET: {
     description: `Cette section offre un récapitulatif détaillé de toutes les informations que vous avez saisies dans les autres rubriques. Elle affiche la contribution financière globale du foyer, ainsi que le détail pour chaque personne. Les montants affichés sont automatiquement ajustés en fonction du mode de répartition choisi et des données saisies, vous permettant d'avoir une vue d'ensemble précise des engagements financiers de chacun.`,
   },
 

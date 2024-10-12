@@ -1,46 +1,38 @@
-import Loading from "@/components/ui/Loading";
-import { useContributions } from "@/hooks/useContributions";
-import { useDistributionMode } from "@/hooks/useDistributionMode";
-import { useExpenses } from "@/hooks/useExpenses";
-import { useIncome } from "@/hooks/useIncome";
-import { usePeople } from "@/hooks/usePeople";
-import { useSavings } from "@/hooks/useSavings";
-import { AppContextType } from "@/types/types";
 import React, { createContext, useContext, useMemo } from "react";
+import { AppContextType } from "@/types/types";
+import Loading from "@/components/ui/Loading";
+import { usePeople } from "@/hooks/usePeople";
+import { useExpenses } from "@/hooks/useExpenses";
+import { useSavings } from "@/hooks/useSavings";
+import { useDistributionMode } from "@/hooks/useDistributionMode";
+import { useIncome } from "@/hooks/useIncome";
+import { useBudget } from "@/hooks/useBudget";
 
 const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { people, isLoading: isPeopleLoading, ...peopleHook } = usePeople();
-  const {
-    expenses,
-    isLoading: isExpensesLoading,
-    ...expensesHook
-  } = useExpenses();
-  const { savings, isLoading: isSavingsLoading, ...savingsHook } = useSavings();
-  const {
-    distributionMode,
-    isLoading: isDistributionModeLoading,
-    ...distributionModeHook
-  } = useDistributionMode();
-  const { income, isLoading: isIncomeLoading, ...incomeHook } = useIncome();
+  const { people, ...peopleHook } = usePeople();
+  const { expenses, ...expensesHook } = useExpenses();
+  const { savings, ...savingsHook } = useSavings();
+  const { distributionMode, ...distributionModeHook } = useDistributionMode();
+  const { income, ...incomeHook } = useIncome();
 
-  const isLoading =
-    isPeopleLoading ||
-    isExpensesLoading ||
-    isSavingsLoading ||
-    isDistributionModeLoading ||
-    isIncomeLoading;
-
-  const contributionsData = useContributions(
+  const budgetData = useBudget(
     people,
     expenses,
     savings,
     income,
     distributionMode
   );
+
+  const isLoading =
+    peopleHook.isLoading ||
+    expensesHook.isLoading ||
+    savingsHook.isLoading ||
+    distributionModeHook.isLoading ||
+    incomeHook.isLoading;
 
   const contextValue = useMemo<AppContextType>(
     () => ({
@@ -54,7 +46,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       ...distributionModeHook,
       income,
       ...incomeHook,
-      contributions: contributionsData,
+      budgets: budgetData,
       isLoading,
     }),
     [
@@ -68,7 +60,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       distributionModeHook,
       income,
       incomeHook,
-      contributionsData,
+      budgetData,
       isLoading,
     ]
   );

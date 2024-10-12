@@ -3,17 +3,17 @@ import { useAppContext } from "@/contexts/AppContext";
 import React, { useEffect, useState } from "react";
 
 const AnalyseManager: React.FC = () => {
-  const { people, contributions } = useAppContext();
+  const { people, budgets } = useAppContext();
   const [analysis, setAnalysis] = useState<string>("");
 
   useEffect(() => {
     const generateAnalysis = () => {
       const isSinglePerson = people.length === 1;
-      const { summary } = contributions;
+      const { summary } = budgets;
       const totalIncome = summary.totalGlobalIncome;
       const totalExpenses = summary.totalGlobalExpenses;
       const totalSavings = summary.totalGlobalSavings;
-      const totalContributions = summary.totalGlobalContributions;
+      const totalOutflows = summary.totalGlobalOutflows;
       const balance = summary.totalBalance;
       const expensePercentage = (totalExpenses / totalIncome) * 100;
       const savingsRate = (totalSavings / totalIncome) * 100;
@@ -53,7 +53,7 @@ const AnalyseManager: React.FC = () => {
         analysis += `Attention : La balance mensuelle est négative (${balance.toFixed(
           2
         )} €). `;
-        analysis += "Les contributions dépassent les revenus. ";
+        analysis += "Les dépenses et l'épargne dépassent les revenus. ";
         analysis +=
           "Il est crucial de revoir le budget pour équilibrer les finances.\n\n";
       } else if (balance > totalIncome * 0.2) {
@@ -67,39 +67,35 @@ const AnalyseManager: React.FC = () => {
       }
 
       // Principaux postes de dépenses
-      const topContributions = contributions.contributions
-        .map((c) => ({
-          name: c.name,
-          amount: c.totalContributions,
+      const topOutflows = budgets.budgets
+        .map((b) => ({
+          name: b.name,
+          amount: b.totalOutflows,
         }))
         .sort((a, b) => b.amount - a.amount)
         .slice(0, 3);
 
-      if (topContributions.length > 0) {
-        analysis += "Principaux contributeurs :\n";
-        topContributions.forEach((c) => {
-          const percent = (c.amount / totalContributions) * 100;
-          analysis += `- ${c.name}: ${c.amount.toFixed(2)} € (${percent.toFixed(
+      if (topOutflows.length > 0) {
+        analysis += "Principaux postes de dépenses et d'épargne :\n";
+        topOutflows.forEach((o) => {
+          const percent = (o.amount / totalOutflows) * 100;
+          analysis += `- ${o.name}: ${o.amount.toFixed(2)} € (${percent.toFixed(
             2
-          )}% des contributions totales)\n`;
+          )}% du total)\n`;
         });
         analysis += "\n";
       }
 
       // Conseils personnalisés
-      if (totalContributions > totalIncome * 0.7) {
+      if (totalOutflows > totalIncome * 0.7) {
         analysis +=
-          "Les contributions représentent une part importante des revenus. Essayez d'identifier les domaines où vous pourriez les réduire.\n\n";
+          "Les dépenses et l'épargne représentent une part importante des revenus. Essayez d'identifier les domaines où vous pourriez les réduire.\n\n";
       }
 
       // Vérification des balances individuelles
       if (!isSinglePerson) {
-        const hasPositiveBalance = contributions.contributions.some(
-          (c) => c.balance > 0
-        );
-        const hasNegativeBalance = contributions.contributions.some(
-          (c) => c.balance < 0
-        );
+        const hasPositiveBalance = budgets.budgets.some((b) => b.balance > 0);
+        const hasNegativeBalance = budgets.budgets.some((b) => b.balance < 0);
 
         if (hasPositiveBalance && hasNegativeBalance) {
           analysis +=
@@ -111,7 +107,7 @@ const AnalyseManager: React.FC = () => {
     };
 
     setAnalysis(generateAnalysis());
-  }, [people, contributions]);
+  }, [people, budgets]);
 
   return (
     <SectionHeader
