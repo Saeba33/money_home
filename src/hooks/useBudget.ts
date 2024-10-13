@@ -67,7 +67,7 @@ export const useBudget = (
       people.length > 0 ? totalFoyerIncome / people.length : 0;
 
     let warning: string | null = null;
-    if (totalGlobalIncome === 0 && distributionMode === "proportionel") {
+    if (totalGlobalIncome === 0 && distributionMode === "proportionnel") {
       warning =
         "Veuillez saisir un revenu pour utiliser le mode de répartition proportionnel.";
     }
@@ -108,7 +108,7 @@ export const useBudget = (
           foyerOutflowsPart = totalFoyerOutflows / people.length;
           percentage = 100 / people.length;
           break;
-        case "proportionel":
+        case "proportionnel":
           if (totalGlobalIncome === 0) {
             foyerOutflowsPart = 0;
             percentage = 0;

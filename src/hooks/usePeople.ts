@@ -3,12 +3,15 @@ import { Person } from "@/types/types";
 import { useLocalStorage } from "./useLocalStorage";
 
 export const usePeople = () => {
-  const [people, setPeople, isLoading] = useLocalStorage<Person[]>("people", [
-    { id: 1, name: "Personne 1", percentage: 100 },
-  ]);
-  const [percentageWarning, setPercentageWarning] = useLocalStorage<
-    string | null
-  >("percentageWarning", null);
+  const [people, setPeople, isLoadingPeople, peopleError] = useLocalStorage<
+    Person[]
+  >("people", [{ id: 1, name: "Personne 1", percentage: 100 }]);
+  const [
+    percentageWarning,
+    setPercentageWarning,
+    isLoadingWarning,
+    warningError,
+  ] = useLocalStorage<string | null>("percentageWarning", null);
   const [personToDelete, setPersonToDelete] = useState<Person | null>(null);
 
   const recalculatePercentages = useCallback((updatedPeople: Person[]) => {
@@ -44,11 +47,11 @@ export const usePeople = () => {
     [setPeople]
   );
 
-  const initiateDeletePerson = useCallback((person: Person) => {
+  const prepareDeletePerson = useCallback((person: Person) => {
     setPersonToDelete(person);
   }, []);
 
-  const confirmDeletePerson = useCallback(
+  const executeDeletePerson = useCallback(
     (id: number) => {
       if (people.length > 1) {
         const updatedPeople = people.filter((person) => person.id !== id);
@@ -98,16 +101,20 @@ export const usePeople = () => {
     [people, setPeople, setPercentageWarning]
   );
 
+  const isLoading = isLoadingPeople || isLoadingWarning;
+  const error = peopleError || warningError;
+
   return {
     people,
     addPerson,
     updatePerson,
-    initiateDeletePerson,
-    confirmDeletePerson,
+    prepareDeletePerson,
+    executeDeletePerson,
     cancelDeletePerson,
     updatePersonPercentage,
     percentageWarning,
     personToDelete,
     isLoading,
+    error,
   };
 };

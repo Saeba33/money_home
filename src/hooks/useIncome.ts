@@ -9,38 +9,36 @@ import { Income } from "@/types/types";
 import { useCallback } from "react";
 
 export const useIncome = () => {
-  const [income, setIncome, isLoadingIncome] = useLocalStorage<Income[]>(
+  const [income, setIncome, isLoadingIncome, incomeError] = useLocalStorage<Income[]>(
     "income",
     []
   );
-  const [newIncome, setNewIncome, isLoadingNewIncome] = useLocalStorage<Income>(
-    "newIncome",
-    INITIAL_NEW_INCOME
-  );
+  const [draftIncome, setDraftIncome, isLoadingDraftIncome] =
+    useLocalStorage<Income>("draftIncome", INITIAL_NEW_INCOME);
 
-  const updateNewIncome = useCallback(
+  const updateDraftIncome = useCallback(
     (updatedIncome: Partial<Income>) => {
-      setNewIncome((prev) => ({ ...prev, ...updatedIncome }));
+      setDraftIncome((prev) => ({ ...prev, ...updatedIncome }));
     },
-    [setNewIncome]
+    [setDraftIncome]
   );
 
   const addIncome = useCallback(() => {
-    if (!newIncome.name || newIncome.amount === undefined) {
+    if (!draftIncome.name || draftIncome.amount === undefined) {
       const missingFields = [];
-      if (!newIncome.name) missingFields.push("nom du revenu");
-      if (newIncome.amount === undefined) missingFields.push("montant");
+      if (!draftIncome.name) missingFields.push("nom du revenu");
+      if (draftIncome.amount === undefined) missingFields.push("montant");
       showWarningNotification(
         `Veuillez renseigner : ${missingFields.join(", ")}`
       );
       return;
     }
 
-    const incomeWithId = { ...newIncome, id: Date.now() };
+    const incomeWithId = { ...draftIncome, id: Date.now() };
     setIncome((prev) => [...prev, incomeWithId]);
-    setNewIncome(INITIAL_NEW_INCOME);
+    setDraftIncome(INITIAL_NEW_INCOME);
     showSuccessNotification("Revenu ajouté avec succès");
-  }, [newIncome, setIncome, setNewIncome]);
+  }, [draftIncome, setIncome, setDraftIncome]);
 
   const updateIncome = useCallback(
     (id: number, updatedIncome: Partial<Income>) => {
@@ -61,15 +59,17 @@ export const useIncome = () => {
     [setIncome]
   );
 
-  const isLoading = isLoadingIncome || isLoadingNewIncome;
+  const isLoading = isLoadingIncome || isLoadingDraftIncome;
+  const error = incomeError ;
 
   return {
     income,
-    newIncome,
-    updateNewIncome,
+    draftIncome,
+    updateDraftIncome,
     addIncome,
     updateIncome,
     deleteIncome,
     isLoading,
+    error,
   };
 };

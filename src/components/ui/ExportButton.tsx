@@ -1,5 +1,5 @@
 import { useAppContext } from "@/contexts/AppContext";
-import { Budget } from "@/types/types";
+import { Budget, ExportToPDFFunction } from "@/types/types";
 import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { FaFileExport } from "react-icons/fa";
@@ -12,9 +12,9 @@ const ExportButton: React.FC = () => {
     distributionMode,
   } = useAppContext();
 
-  const exportToPDF = (
-    exportBudgetManager: boolean,
-    exportBudgetChart: boolean
+  const generatePDFReport: ExportToPDFFunction = (
+    exportBudgetManager,
+    exportBudgetChart
   ) => {
     const doc = new jsPDF();
 
@@ -66,7 +66,7 @@ const ExportButton: React.FC = () => {
       <ExportModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onExport={exportToPDF}
+        onExport={generatePDFReport}
       />
     </>
   );

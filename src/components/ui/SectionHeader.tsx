@@ -14,6 +14,8 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   const [isOpen, setIsOpen] = useState(defaultOpenedSection);
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const headerId = `${title.toLowerCase().replace(/\s+/g, "-")}-header`;
+  const contentId = `${title.toLowerCase().replace(/\s+/g, "-")}-content`;
 
   useEffect(() => {
     if (contentRef.current) {
@@ -35,22 +37,33 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
       <div
         className={`section-header-${isOpen ? "open" : "closed"}`}
         onClick={() => setIsOpen(!isOpen)}
+        role="button"
+        aria-expanded={isOpen}
+        aria-controls={contentId}
+        id={headerId}
       >
         <h2 className="section-title">
           {title}
           <button
             onClick={toggleInfo}
             className="section-info"
-            aria-label="Plus d'informations"
+            aria-label={`Plus d'informations sur ${title}`}
           >
             <BsInfoSquareFill />
           </button>
         </h2>
-        {isOpen ? <FaChevronUp size={20} /> : <FaChevronDown size={20} />}
+        {isOpen ? (
+          <FaChevronUp size={20} aria-hidden="true" />
+        ) : (
+          <FaChevronDown size={20} aria-hidden="true" />
+        )}
       </div>
       <div
         ref={contentRef}
         className={`section-content ${isOpen ? "open" : "closed"}`}
+        id={contentId}
+        role="region"
+        aria-labelledby={headerId}
       >
         <div className="section-content-inner">{children}</div>
       </div>

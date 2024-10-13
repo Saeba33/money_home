@@ -9,36 +9,36 @@ import {
 import { useLocalStorage } from "./useLocalStorage";
 
 export const useExpenses = () => {
-  const [expenses, setExpenses, isLoadingExpenses] = useLocalStorage<Expense[]>(
+  const [expenses, setExpenses, isLoadingExpenses, expensesError] = useLocalStorage<Expense[]>(
     "expenses",
     INITIAL_EXPENSES
   );
-  const [newExpense, setNewExpense, isLoadingNewExpense] =
-    useLocalStorage<Expense>("newExpense", INITIAL_NEW_EXPENSE);
+  const [draftExpense, setDraftExpense, isLoadingDraftExpense] =
+    useLocalStorage<Expense>("draftExpense", INITIAL_NEW_EXPENSE);
 
-  const updateNewExpense = useCallback(
+  const updateDraftExpense = useCallback(
     (updatedExpense: Partial<Expense>) => {
-      setNewExpense((prev) => ({ ...prev, ...updatedExpense }));
+      setDraftExpense((prev) => ({ ...prev, ...updatedExpense }));
     },
-    [setNewExpense]
+    [setDraftExpense]
   );
 
   const addExpense = useCallback(() => {
-    if (!newExpense.name || newExpense.amount === undefined) {
+    if (!draftExpense.name || draftExpense.amount === undefined) {
       const missingFields = [];
-      if (!newExpense.name) missingFields.push("nom de la dépense");
-      if (newExpense.amount === undefined) missingFields.push("montant");
+      if (!draftExpense.name) missingFields.push("nom de la dépense");
+      if (draftExpense.amount === undefined) missingFields.push("montant");
       showWarningNotification(
         `Veuillez renseigner : ${missingFields.join(", ")}`
       );
       return;
     }
 
-    const expenseWithId = { ...newExpense, id: Date.now() };
+    const expenseWithId = { ...draftExpense, id: Date.now() };
     setExpenses((prev) => [...prev, expenseWithId]);
-    setNewExpense(INITIAL_NEW_EXPENSE);
+    setDraftExpense(INITIAL_NEW_EXPENSE);
     showSuccessNotification("Dépense ajoutée avec succès");
-  }, [newExpense, setExpenses, setNewExpense]);
+  }, [draftExpense, setExpenses, setDraftExpense]);
 
   const updateExpense = useCallback(
     (id: number, updatedExpense: Partial<Expense>) => {
@@ -59,15 +59,17 @@ export const useExpenses = () => {
     [setExpenses]
   );
 
-  const isLoading = isLoadingExpenses || isLoadingNewExpense;
+  const isLoading = isLoadingExpenses || isLoadingDraftExpense;
+  const error = expensesError;
 
   return {
     expenses,
-    newExpense,
-    updateNewExpense,
+    draftExpense,
+    updateDraftExpense,
     addExpense,
     updateExpense,
     deleteExpense,
     isLoading,
+    error,
   };
 };

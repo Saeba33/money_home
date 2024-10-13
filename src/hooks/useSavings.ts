@@ -9,38 +9,36 @@ import {
 import { useLocalStorage } from "./useLocalStorage";
 
 export const useSavings = () => {
-  const [savings, setSavings, isLoadingSavings] = useLocalStorage<Saving[]>(
+  const [savings, setSavings, isLoadingSavings, savingsError] = useLocalStorage<Saving[]>(
     "savings",
     []
   );
-  const [newSaving, setNewSaving, isLoadingNewSaving] = useLocalStorage<Saving>(
-    "newSaving",
-    INITIAL_NEW_SAVING
-  );
+  const [draftSaving, setDraftSaving, isLoadingDraftSaving] =
+    useLocalStorage<Saving>("draftSaving", INITIAL_NEW_SAVING);
 
-  const updateNewSaving = useCallback(
+  const updateDraftSaving = useCallback(
     (updatedSaving: Partial<Saving>) => {
-      setNewSaving((prev) => ({ ...prev, ...updatedSaving }));
+      setDraftSaving((prev) => ({ ...prev, ...updatedSaving }));
     },
-    [setNewSaving]
+    [setDraftSaving]
   );
 
   const addSaving = useCallback(() => {
-    if (!newSaving.name || newSaving.amount === undefined) {
+    if (!draftSaving.name || draftSaving.amount === undefined) {
       const missingFields = [];
-      if (!newSaving.name) missingFields.push("nom de l'épargne");
-      if (newSaving.amount === undefined) missingFields.push("montant");
+      if (!draftSaving.name) missingFields.push("nom de l'épargne");
+      if (draftSaving.amount === undefined) missingFields.push("montant");
       showWarningNotification(
         `Veuillez renseigner : ${missingFields.join(", ")}`
       );
       return;
     }
 
-    const savingWithId = { ...newSaving, id: Date.now() };
+    const savingWithId = { ...draftSaving, id: Date.now() };
     setSavings((prev) => [...prev, savingWithId]);
-    setNewSaving(INITIAL_NEW_SAVING);
+    setDraftSaving(INITIAL_NEW_SAVING);
     showSuccessNotification("Épargne ajoutée avec succès");
-  }, [newSaving, setSavings, setNewSaving]);
+  }, [draftSaving, setSavings, setDraftSaving]);
 
   const updateSaving = useCallback(
     (id: number, updatedSaving: Partial<Saving>) => {
@@ -61,15 +59,17 @@ export const useSavings = () => {
     [setSavings]
   );
 
-  const isLoading = isLoadingSavings || isLoadingNewSaving;
+  const isLoading = isLoadingSavings || isLoadingDraftSaving;
+  const error = savingsError;
 
   return {
     savings,
-    newSaving,
-    updateNewSaving,
+    draftSaving,
+    updateDraftSaving,
     addSaving,
     updateSaving,
     deleteSaving,
     isLoading,
+    error,
   };
 };

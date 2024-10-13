@@ -18,6 +18,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { CustomTooltipProps } from "@/types/types";
 
 const COLORS = {
   "Revenus personnels": "#0088FE",
@@ -27,19 +28,6 @@ const COLORS = {
   "Épargne personnelle": "#8884d8",
   "Épargne du foyer": "#82ca9d",
 };
-
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    name: string;
-    value: number;
-    payload: {
-      name: string;
-      value: number;
-    };
-  }>;
-  label?: string;
-}
 
 const BudgetCharts: React.FC = () => {
   const { budgets, people } = useAppContext();
@@ -89,7 +77,7 @@ const BudgetCharts: React.FC = () => {
     arrows: false,
   };
 
-  const CustomPieTooltip: React.FC<CustomTooltipProps> = ({
+  const PieChartTooltip: React.FC<CustomTooltipProps> = ({
     active,
     payload,
   }) => {
@@ -111,7 +99,7 @@ const BudgetCharts: React.FC = () => {
     return null;
   };
 
-  const CustomBarTooltip: React.FC<CustomTooltipProps> = ({
+  const BarChartTooltip: React.FC<CustomTooltipProps> = ({
     active,
     payload,
     label,
@@ -134,7 +122,7 @@ const BudgetCharts: React.FC = () => {
     return null;
   };
 
-  const CustomLineTooltip: React.FC<CustomTooltipProps> = ({
+  const LineChartTooltip: React.FC<CustomTooltipProps> = ({
     active,
     payload,
     label,
@@ -188,7 +176,7 @@ const BudgetCharts: React.FC = () => {
                       />
                     ))}
                   </Pie>
-                  <Tooltip content={<CustomPieTooltip />} />
+                  <Tooltip content={<PieChartTooltip />} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -203,7 +191,7 @@ const BudgetCharts: React.FC = () => {
               <BarChart data={barChartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip content={<CustomBarTooltip />} />
+                <Tooltip content={<BarChartTooltip />} />
                 <Legend />
                 <Bar
                   dataKey="Revenus personnels"
@@ -247,7 +235,7 @@ const BudgetCharts: React.FC = () => {
               <LineChart data={lineChartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip content={<CustomLineTooltip />} />
+                <Tooltip content={<LineChartTooltip />} />
                 <Legend />
                 <Line type="monotone" dataKey="Montant" stroke="#8884d8" />
               </LineChart>

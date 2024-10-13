@@ -1,7 +1,7 @@
-import React from "react";
-import { useAppContext } from "@/contexts/AppContext";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
 import { DistributionMode } from "@/types/types";
+import React from "react";
 
 const DistributionModeComponent: React.FC = () => {
   const { distributionMode, setDistributionMode, people } = useAppContext();
@@ -10,7 +10,11 @@ const DistributionModeComponent: React.FC = () => {
     return null;
   }
 
-  const modes: DistributionMode[] = ["égalitaire", "proportionel", "personnalisé"];
+  const modes: DistributionMode[] = [
+    "égalitaire",
+    "proportionnel",
+    "personnalisé",
+  ];
 
   return (
     <SectionHeader

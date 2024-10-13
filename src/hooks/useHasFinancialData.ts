@@ -1,7 +1,7 @@
 import { useAppContext } from "@/contexts/AppContext";
 
 export const useHasFinancialData = () => {
-  const { expenses, savings, income, isLoading } = useAppContext();
+  const { expenses, savings, income, isLoading, error } = useAppContext();
 
   const hasSignificantExpenses = expenses.some(
     (expense) => typeof expense.amount === "number" && expense.amount > 0
@@ -22,5 +22,6 @@ export const useHasFinancialData = () => {
     hasSignificantIncome,
     hasAnySignificantData,
     isLoading,
+    error,
   };
 };

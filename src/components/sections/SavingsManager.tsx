@@ -6,32 +6,32 @@ import SectionHeader from "@/components/ui/SectionHeader";
 const SavingsManager: React.FC = () => {
   const {
     savings,
-    newSaving,
-    updateNewSaving,
+    draftSaving,
+    updateDraftSaving,
     addSaving,
     updateSaving,
     deleteSaving,
     people,
   } = useAppContext();
 
-  const memoizedNewSavingForm = useMemo(
+  const memoizedDraftSavingForm = useMemo(
     () => (
       <div className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
         <div className="flex flex-wrap gap-2 w-full items-center">
           <input
             type="text"
-            value={newSaving.name}
+            value={draftSaving.name}
             onChange={(e) =>
-              updateNewSaving({ ...newSaving, name: e.target.value })
+              updateDraftSaving({ ...draftSaving, name: e.target.value })
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom de l'épargne"
             aria-label="Nom de l'épargne"
           />
           <select
-            value={newSaving.assignedTo}
+            value={draftSaving.assignedTo}
             onChange={(e) =>
-              updateNewSaving({ ...newSaving, assignedTo: e.target.value })
+              updateDraftSaving({ ...draftSaving, assignedTo: e.target.value })
             }
             className="select"
             aria-label="Assigné à"
@@ -45,9 +45,9 @@ const SavingsManager: React.FC = () => {
           </select>
           <input
             type="number"
-            value={newSaving.amount || ""}
+            value={draftSaving.amount || ""}
             onChange={(e) =>
-              updateNewSaving({ ...newSaving, amount: Number(e.target.value) })
+              updateDraftSaving({ ...draftSaving, amount: Number(e.target.value) })
             }
             className="input w-full sm:w-32"
             placeholder="Montant"
@@ -55,9 +55,9 @@ const SavingsManager: React.FC = () => {
           />
           <input
             type="text"
-            value={newSaving.comments}
+            value={draftSaving.comments}
             onChange={(e) =>
-              updateNewSaving({ ...newSaving, comments: e.target.value })
+              updateDraftSaving({ ...draftSaving, comments: e.target.value })
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
@@ -73,7 +73,7 @@ const SavingsManager: React.FC = () => {
         </div>
       </div>
     ),
-    [newSaving, updateNewSaving, addSaving, people]
+    [draftSaving, updateDraftSaving, addSaving, people]
   );
 
   const memoizedSavingsList = useMemo(() => {
@@ -161,7 +161,7 @@ const SavingsManager: React.FC = () => {
       infoTextKey="SAVINGS"
       defaultOpenedSection={true}
     >
-      {memoizedNewSavingForm}
+      {memoizedDraftSavingForm}
       {memoizedSavingsList}
     </SectionHeader>
   );

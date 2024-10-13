@@ -27,12 +27,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     distributionMode
   );
 
-  const isLoading =
+const isLoading = useMemo(() => 
     peopleHook.isLoading ||
     expensesHook.isLoading ||
     savingsHook.isLoading ||
     distributionModeHook.isLoading ||
-    incomeHook.isLoading;
+    incomeHook.isLoading,
+    [peopleHook.isLoading, expensesHook.isLoading, savingsHook.isLoading, distributionModeHook.isLoading, incomeHook.isLoading]
+  );
+
+  const error = useMemo(() => 
+    peopleHook.error ||
+    expensesHook.error ||
+    savingsHook.error ||
+    incomeHook.error,
+    [peopleHook.error, expensesHook.error, savingsHook.error, incomeHook.error]
+  );
 
   const contextValue = useMemo<AppContextType>(
     () => ({
@@ -48,6 +58,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       ...incomeHook,
       budgets: budgetData,
       isLoading,
+      error,
     }),
     [
       people,
@@ -62,6 +73,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       incomeHook,
       budgetData,
       isLoading,
+      error,
     ]
   );
 

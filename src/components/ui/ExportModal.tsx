@@ -1,22 +1,13 @@
 import React, { useState } from "react";
-
-interface ExportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onExport: (
-    exportContributionManager: boolean,
-    exportContributionChart: boolean
-  ) => void;
-}
+import { ExportModalProps } from "@/types/types";
 
 const ExportModal: React.FC<ExportModalProps> = ({
   isOpen,
   onClose,
   onExport,
 }) => {
-  const [exportContributionManager, setExportContributionManager] =
-    useState(true);
-  const [exportContributionChart, setExportContributionChart] = useState(true);
+  const [exportBudgetManager, setExportBudgetManager] = useState(true);
+  const [exportBudgetChart, setExportBudgetChart] = useState(true);
 
   if (!isOpen) return null;
 
@@ -28,8 +19,8 @@ const ExportModal: React.FC<ExportModalProps> = ({
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={exportContributionManager}
-              onChange={(e) => setExportContributionManager(e.target.checked)}
+              checked={exportBudgetManager}
+              onChange={(e) => setExportBudgetManager(e.target.checked)}
               className="mr-2"
             />
             Exporter Budget
@@ -39,22 +30,11 @@ const ExportModal: React.FC<ExportModalProps> = ({
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={exportContributionChart}
-              onChange={(e) => setExportContributionChart(e.target.checked)}
+              checked={exportBudgetChart}
+              onChange={(e) => setExportBudgetChart(e.target.checked)}
               className="mr-2"
             />
             Exporter Graphiques
-          </label>
-        </div>
-        <div className="mb-4">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={exportContributionChart}
-              onChange={(e) => setExportContributionChart(e.target.checked)}
-              className="mr-2"
-            />
-            Exporter Analyse
           </label>
         </div>
         <div className="flex justify-end">
@@ -65,9 +45,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
             Annuler
           </button>
           <button
-            onClick={() =>
-              onExport(exportContributionManager, exportContributionChart)
-            }
+            onClick={() => onExport(exportBudgetManager, exportBudgetChart)}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Exporter

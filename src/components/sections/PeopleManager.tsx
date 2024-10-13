@@ -10,8 +10,8 @@ const PeopleManager: React.FC = () => {
     people,
     addPerson,
     updatePerson,
-    initiateDeletePerson,
-    confirmDeletePerson,
+    prepareDeletePerson,
+    executeDeletePerson,
     cancelDeletePerson,
     updatePersonPercentage,
     percentageWarning,
@@ -76,7 +76,7 @@ const PeopleManager: React.FC = () => {
       });
     }
 
-    confirmDeletePerson(personToDelete.id);
+    executeDeletePerson(personToDelete.id);
   };
 
   const memoizedPeopleList = useMemo(() => {
@@ -124,7 +124,7 @@ const PeopleManager: React.FC = () => {
                 </span>
               </div>
               <button
-                onClick={() => initiateDeletePerson(person)}
+                onClick={() => prepareDeletePerson(person)}
                 className="can flex-shrink-0"
                 aria-label="Supprimer la personne"
               >
@@ -135,7 +135,7 @@ const PeopleManager: React.FC = () => {
         </div>
       );
     });
-  }, [people, updatePerson, updatePersonPercentage, initiateDeletePerson]);
+  }, [people, updatePerson, updatePersonPercentage, prepareDeletePerson]);
 
   if (isLoading) {
     return <div>Chargement...</div>;

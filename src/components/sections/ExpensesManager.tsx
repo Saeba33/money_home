@@ -6,32 +6,32 @@ import SectionHeader from "@/components/ui/SectionHeader";
 const ExpensesManager: React.FC = () => {
   const {
     expenses,
-    newExpense,
-    updateNewExpense,
+    draftExpense,
+    updateDraftExpense,
     addExpense,
     updateExpense,
     deleteExpense,
     people,
   } = useAppContext();
 
-  const memoizedNewExpenseForm = useMemo(
+  const memoizedDraftExpenseForm = useMemo(
     () => (
       <div className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
         <div className="flex flex-wrap gap-2 w-full items-center">
           <input
             type="text"
-            value={newExpense.name}
+            value={draftExpense.name}
             onChange={(e) =>
-              updateNewExpense({ ...newExpense, name: e.target.value })
+              updateDraftExpense({ ...draftExpense, name: e.target.value })
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom de la dépense"
             aria-label="Nom de la dépense"
           />
           <select
-            value={newExpense.assignedTo}
+            value={draftExpense.assignedTo}
             onChange={(e) =>
-              updateNewExpense({ ...newExpense, assignedTo: e.target.value })
+              updateDraftExpense({ ...draftExpense, assignedTo: e.target.value })
             }
             className="select"
             aria-label="Assigné à"
@@ -45,10 +45,10 @@ const ExpensesManager: React.FC = () => {
           </select>
           <input
             type="number"
-            value={newExpense.amount || ""}
+            value={draftExpense.amount || ""}
             onChange={(e) =>
-              updateNewExpense({
-                ...newExpense,
+              updateDraftExpense({
+                ...draftExpense,
                 amount: Number(e.target.value),
               })
             }
@@ -58,9 +58,9 @@ const ExpensesManager: React.FC = () => {
           />
           <input
             type="text"
-            value={newExpense.comments}
+            value={draftExpense.comments}
             onChange={(e) =>
-              updateNewExpense({ ...newExpense, comments: e.target.value })
+              updateDraftExpense({ ...draftExpense, comments: e.target.value })
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
@@ -76,7 +76,7 @@ const ExpensesManager: React.FC = () => {
         </div>
       </div>
     ),
-    [newExpense, updateNewExpense, addExpense, people]
+    [draftExpense, updateDraftExpense, addExpense, people]
   );
 
   const memoizedExpensesList = useMemo(() => {
@@ -168,7 +168,7 @@ const ExpensesManager: React.FC = () => {
       infoTextKey="EXPENSES"
       defaultOpenedSection={true}
     >
-      {memoizedNewExpenseForm}
+      {memoizedDraftExpenseForm}
       {memoizedExpensesList}
     </SectionHeader>
   );

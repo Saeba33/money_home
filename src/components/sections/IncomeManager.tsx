@@ -6,32 +6,32 @@ import { FaRegTrashCan } from "react-icons/fa6";
 const IncomeManager: React.FC = () => {
   const {
     income,
-    newIncome,
-    updateNewIncome,
+    draftIncome,
+    updateDraftIncome,
     addIncome,
     updateIncome,
     deleteIncome,
     people,
   } = useAppContext();
 
-  const memoizedNewIncomeForm = useMemo(
+  const memoizedDraftIncomeForm = useMemo(
     () => (
       <div className="section-field bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
         <div className="flex flex-wrap gap-2 w-full items-center">
           <input
             type="text"
-            value={newIncome.name}
+            value={draftIncome.name}
             onChange={(e) =>
-              updateNewIncome({ ...newIncome, name: e.target.value })
+              updateDraftIncome({ ...draftIncome, name: e.target.value })
             }
             className="input flex-grow min-w-[200px]"
             placeholder="Nom du revenu"
             aria-label="Nom du revenu"
           />
           <select
-            value={newIncome.assignedTo}
+            value={draftIncome.assignedTo}
             onChange={(e) =>
-              updateNewIncome({ ...newIncome, assignedTo: e.target.value })
+              updateDraftIncome({ ...draftIncome, assignedTo: e.target.value })
             }
             className="select"
             aria-label="Assigné à"
@@ -45,10 +45,10 @@ const IncomeManager: React.FC = () => {
           </select>
           <input
             type="number"
-            value={newIncome.amount || ""}
+            value={draftIncome.amount || ""}
             onChange={(e) =>
-              updateNewIncome({
-                ...newIncome,
+              updateDraftIncome({
+                ...draftIncome,
                 amount: Number(e.target.value),
               })
             }
@@ -58,9 +58,9 @@ const IncomeManager: React.FC = () => {
           />
           <input
             type="text"
-            value={newIncome.comments}
+            value={draftIncome.comments}
             onChange={(e) =>
-              updateNewIncome({ ...newIncome, comments: e.target.value })
+              updateDraftIncome({ ...draftIncome, comments: e.target.value })
             }
             className="input flex-grow min-w-[200px] lg:flex-grow-[2]"
             placeholder="Commentaires"
@@ -76,7 +76,7 @@ const IncomeManager: React.FC = () => {
         </div>
       </div>
     ),
-    [newIncome, updateNewIncome, addIncome, people]
+    [draftIncome, updateDraftIncome, addIncome, people]
   );
 
   const memoizedIncomeList = useMemo(() => {
@@ -167,7 +167,7 @@ const IncomeManager: React.FC = () => {
       infoTextKey="INCOME"
       defaultOpenedSection={true}
     >
-      {memoizedNewIncomeForm}
+      {memoizedDraftIncomeForm}
       {memoizedIncomeList}
     </SectionHeader>
   );

@@ -1,19 +1,19 @@
 // Types de base
-export type DistributionMode = "égalitaire" | "proportionel" | "personnalisé";
+export type DistributionMode = "égalitaire" | "proportionnel" | "personnalisé";
 
 // Interfaces pour les entités principales
-export interface FinancialItem {
-  id: number;
-  name: string;
-  amount: number | undefined;
-  assignedTo: string;
-  comments: string;
-}
-
 export interface Person {
   id: number;
   name: string;
   percentage: number;
+}
+
+export interface FinancialItem {
+  id: number;
+  name: string;
+  amount: number | undefined;
+  assignedTo: "foyer" | string;
+  comments: string;
 }
 
 export type Income = FinancialItem;
@@ -95,14 +95,45 @@ export interface DeletePersonModalProps {
   onConfirm: (action: "delete" | "reassign") => void;
 }
 
+export interface ExportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onExport: (exportBudgetManager: boolean, exportBudgetChart: boolean) => void;
+}
+
+export interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: {
+      name: string;
+      value: number;
+    };
+  }>;
+  label?: string;
+}
+
+// Types pour les fonctions
+export interface ExportToPDFFunction {
+  (exportBudgetManager: boolean, exportBudgetChart: boolean): void;
+}
+
+export type UseLocalStorageReturn<T> = [
+  T,
+  (value: T | ((val: T) => T)) => void,
+  boolean,
+  Error | null
+];
+
 // Types pour le contexte de l'application
 export interface AppContextType {
   // Gestion des personnes
   people: Person[];
   addPerson: () => void;
   updatePerson: (id: number, updatedPerson: Partial<Person>) => void;
-  initiateDeletePerson: (person: Person) => void;
-  confirmDeletePerson: (id: number) => void;
+  prepareDeletePerson: (person: Person) => void;
+  executeDeletePerson: (id: number) => void;
   cancelDeletePerson: () => void;
   updatePersonPercentage: (id: number, value: number) => void;
   percentageWarning: string | null;
@@ -110,8 +141,8 @@ export interface AppContextType {
 
   // Gestion des dépenses
   expenses: Expense[];
-  newExpense: Partial<Expense>;
-  updateNewExpense: (updatedExpense: Partial<Expense>) => void;
+  draftExpense: Partial<Expense>;
+  updateDraftExpense: (updatedExpense: Partial<Expense>) => void;
   addExpense: () => void;
   updateExpense: (expenseId: number, updatedExpense: Partial<Expense>) => void;
   deleteExpense: (expenseId: number) => void;
@@ -122,16 +153,16 @@ export interface AppContextType {
 
   // Gestion des épargnes
   savings: Saving[];
-  newSaving: Saving;
-  updateNewSaving: (updatedSaving: Partial<Saving>) => void;
+  draftSaving: Saving;
+  updateDraftSaving: (updatedSaving: Partial<Saving>) => void;
   addSaving: () => void;
   updateSaving: (index: number, updatedSaving: Partial<Saving>) => void;
   deleteSaving: (index: number) => void;
 
   // Gestion des revenus
   income: Income[];
-  newIncome: Income;
-  updateNewIncome: (updatedIncome: Partial<Income>) => void;
+  draftIncome: Income;
+  updateDraftIncome: (updatedIncome: Partial<Income>) => void;
   addIncome: () => void;
   updateIncome: (incomeId: number, updatedIncome: Partial<Income>) => void;
   deleteIncome: (incomeId: number) => void;
@@ -144,6 +175,8 @@ export interface AppContextType {
   };
 
   isLoading: boolean;
+  error: Error | null;
+
 }
 
 // Types pour les textes d'information
