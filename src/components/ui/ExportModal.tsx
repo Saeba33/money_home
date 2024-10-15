@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { ExportModalProps } from "@/types/types";
+
+interface ExportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onExport: (exportBudget: boolean, exportAnalysis: boolean) => void;
+}
 
 const ExportModal: React.FC<ExportModalProps> = ({
   isOpen,
   onClose,
   onExport,
 }) => {
-  const [exportBudgetManager, setExportBudgetManager] = useState(true);
-  const [exportBudgetChart, setExportBudgetChart] = useState(true);
+  const [exportBudget, setExportBudget] = useState(true);
+  const [exportAnalysis, setExportAnalysis] = useState(true);
 
   if (!isOpen) return null;
 
@@ -19,8 +24,8 @@ const ExportModal: React.FC<ExportModalProps> = ({
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={exportBudgetManager}
-              onChange={(e) => setExportBudgetManager(e.target.checked)}
+              checked={exportBudget}
+              onChange={(e) => setExportBudget(e.target.checked)}
               className="mr-2"
             />
             Exporter Budget
@@ -30,11 +35,11 @@ const ExportModal: React.FC<ExportModalProps> = ({
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={exportBudgetChart}
-              onChange={(e) => setExportBudgetChart(e.target.checked)}
+              checked={exportAnalysis}
+              onChange={(e) => setExportAnalysis(e.target.checked)}
               className="mr-2"
             />
-            Exporter Graphiques
+            Exporter Analyse
           </label>
         </div>
         <div className="flex justify-end">
@@ -45,7 +50,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
             Annuler
           </button>
           <button
-            onClick={() => onExport(exportBudgetManager, exportBudgetChart)}
+            onClick={() => onExport(exportBudget, exportAnalysis)}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Exporter

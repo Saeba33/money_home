@@ -1,56 +1,15 @@
-import { useAppContext } from "@/contexts/AppContext";
-import { Budget, ExportToPDFFunction } from "@/types/types";
-import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { FaFileExport } from "react-icons/fa";
 import ExportModal from "./ExportModal";
+import { useAppContext } from "@/contexts/AppContext";
+import { generatePDFReport } from "@/utils/pdfGenerator";
 
 const ExportButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {
-    budgets: { budgets },
-    distributionMode,
-  } = useAppContext();
+  const { budgets, distributionMode } = useAppContext();
 
-  const generatePDFReport: ExportToPDFFunction = (
-    exportBudgetManager,
-    exportBudgetChart
-  ) => {
-    const doc = new jsPDF();
-
-    if (exportBudgetManager) {
-      doc.text("Rapport du Budget", 10, 10);
-      doc.text(`Mode de distribution : ${distributionMode}`, 10, 20);
-
-      budgets.forEach((budget: Budget, index: number) => {
-        const yPos = 30 + index * 40;
-        doc.text(`${budget.name}:`, 10, yPos);
-        doc.text(
-          `Dépenses et épargne du foyer: ${budget.foyerOutflows.toFixed(
-            2
-          )} € (${budget.percentage.toFixed(2)}%)`,
-          20,
-          yPos + 10
-        );
-        doc.text(
-          `Dépenses personnelles: ${budget.personalExpenses.toFixed(2)} €`,
-          20,
-          yPos + 20
-        );
-        doc.text(
-          `Revenus totaux: ${budget.totalIncome.toFixed(2)} €`,
-          20,
-          yPos + 30
-        );
-      });
-    }
-
-    if (exportBudgetChart) {
-      // Ajoutez ici la logique pour exporter les graphiques
-      // Vous devrez probablement utiliser une bibliothèque comme html2canvas pour capturer les graphiques
-    }
-
-    doc.save("budget-report.pdf");
+  const handleExport = (exportBudget: boolean, exportAnalysis: boolean) => {
+    generatePDFReport(budgets, distributionMode, exportBudget, exportAnalysis);
     setIsModalOpen(false);
   };
 
@@ -66,7 +25,7 @@ const ExportButton: React.FC = () => {
       <ExportModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onExport={generatePDFReport}
+        onExport={handleExport}
       />
     </>
   );

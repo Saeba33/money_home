@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { UseLocalStorageReturn } from "@/types/types";
 
 export function useLocalStorage<T>(
@@ -9,6 +9,9 @@ export function useLocalStorage<T>(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // Use a ref to store the initial value
+  const initialValueRef = useRef(initialValue);
+
   const loadFromLocalStorage = useCallback(() => {
     setIsLoading(true);
     setError(null);
@@ -17,16 +20,16 @@ export function useLocalStorage<T>(
       if (item) {
         setStoredValue(JSON.parse(item));
       } else {
-        setStoredValue(initialValue);
+        setStoredValue(initialValueRef.current);
       }
     } catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error);
       setError(error instanceof Error ? error : new Error(String(error)));
-      setStoredValue(initialValue);
+      setStoredValue(initialValueRef.current);
     } finally {
       setIsLoading(false);
     }
-  }, [key, initialValue]);
+  }, [key]); // Remove initialValue from dependencies
 
   useEffect(() => {
     loadFromLocalStorage();

@@ -132,36 +132,30 @@ export const useBudget = (
       const totalIncomePerPerson = totalPersonalIncome + foyerIncomePerPerson;
       const balance = totalIncomePerPerson - totalOutflowsPerPerson;
 
+      // Calcul des dépenses et épargnes du foyer en évitant la division par zéro
+      const foyerExpensesPart =
+        totalFoyerOutflows !== 0
+          ? (foyerOutflowsPart * totalFoyerExpenses) / totalFoyerOutflows
+          : 0;
+      const foyerSavingsPart =
+        totalFoyerOutflows !== 0
+          ? (foyerOutflowsPart * totalFoyerSavings) / totalFoyerOutflows
+          : 0;
+
       return {
         name: person.name,
         personalIncome: parseFloat(totalPersonalIncome.toFixed(2)),
         foyerIncome: parseFloat(foyerIncomePerPerson.toFixed(2)),
         totalIncome: parseFloat(totalIncomePerPerson.toFixed(2)),
         personalExpenses: parseFloat(totalPersonalExpenses.toFixed(2)),
-        foyerExpenses: parseFloat(
-          (
-            (foyerOutflowsPart * totalFoyerExpenses) /
-            totalFoyerOutflows
-          ).toFixed(2)
-        ),
+        foyerExpenses: parseFloat(foyerExpensesPart.toFixed(2)),
         totalExpenses: parseFloat(
-          (
-            totalPersonalExpenses +
-            (foyerOutflowsPart * totalFoyerExpenses) / totalFoyerOutflows
-          ).toFixed(2)
+          (totalPersonalExpenses + foyerExpensesPart).toFixed(2)
         ),
         personalSavings: parseFloat(totalPersonalSavings.toFixed(2)),
-        foyerSavings: parseFloat(
-          (
-            (foyerOutflowsPart * totalFoyerSavings) /
-            totalFoyerOutflows
-          ).toFixed(2)
-        ),
+        foyerSavings: parseFloat(foyerSavingsPart.toFixed(2)),
         totalSavings: parseFloat(
-          (
-            totalPersonalSavings +
-            (foyerOutflowsPart * totalFoyerSavings) / totalFoyerOutflows
-          ).toFixed(2)
+          (totalPersonalSavings + foyerSavingsPart).toFixed(2)
         ),
         personalOutflows: parseFloat(totalPersonalOutflows.toFixed(2)),
         foyerOutflows: parseFloat(foyerOutflowsPart.toFixed(2)),

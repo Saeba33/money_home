@@ -10,7 +10,7 @@ import ExpensesManager from "@/components/sections/ExpensesManager";
 import IncomeManager from "@/components/sections/IncomeManager";
 import PeopleManager from "@/components/sections/PeopleManager";
 import SavingsManager from "@/components/sections/SavingsManager";
-import PDFExportButton from "@/components/ui/ExportButton";
+import ExportButton from "@/components/ui/ExportButton";
 import { NotificationProvider } from "@/components/ui/Notifications";
 import ResetButton from "@/components/ui/ResetButton";
 import { AppProvider } from "@/contexts/AppContext";
@@ -40,7 +40,7 @@ const AppContent: React.FC = () => {
             )}
           </div>
           <div className="flex items-center justify-between">
-            <PDFExportButton />
+            <ExportButton />
             <ResetButton />
           </div>
         </div>

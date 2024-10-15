@@ -1,142 +1,100 @@
-import React from "react";
-import Slider from "react-slick";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Bar,
-  BarChart,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
+  Chart as ChartJS,
+  ArcElement,
   Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
-import { useAppContext } from "@/contexts/AppContext";
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+} from "chart.js";
+import { Pie, Bar, Line } from "react-chartjs-2";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { CustomTooltipProps } from "@/types/types";
+import { useCharts } from "@/hooks/useCharts";
 
-const COLORS = {
-  "Revenus personnels": "#0088FE",
-  "Revenus du foyer": "#00C49F",
-  "Dépenses personnelles": "#FFBB28",
-  "Dépenses du foyer": "#FF8042",
-  "Épargne personnelle": "#8884d8",
-  "Épargne du foyer": "#82ca9d",
-};
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title
+);
 
 const BudgetCharts: React.FC = () => {
-  const { budgets, people } = useAppContext();
+  const {
+    pieChartData,
+    barChartData,
+    lineChartData,
+    pieChartOptions,
+    barChartOptions,
+    lineChartOptions,
+    peopleCount,
+  } = useCharts();
 
-  if (!budgets.budgets || budgets.budgets.length === 0 || !budgets.summary) {
-    return <div>Aucune donnée disponible pour afficher les graphiques.</div>;
-  }
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
 
-  const pieChartData = budgets.budgets.map((b) => ({
-    name: b.name,
-    value: b.totalOutflows,
-  }));
-
-  const barChartData = budgets.budgets.map((b) => ({
-    name: b.name,
-    "Revenus personnels": b.personalIncome,
-    "Revenus du foyer": b.foyerIncome,
-    "Dépenses personnelles": b.personalExpenses,
-    "Dépenses du foyer": b.foyerExpenses,
-    "Épargne personnelle": b.personalSavings,
-    "Épargne du foyer": b.foyerSavings,
-  }));
-
-  const lineChartData = [
+  const slides = [
+    ...(peopleCount > 1
+      ? [
+          {
+            title: "Répartition des dépenses et épargnes par personne",
+            chart: <Pie data={pieChartData} options={pieChartOptions} />,
+          },
+        ]
+      : []),
     {
-      name: "Revenus totaux",
-      Montant: budgets.summary.totalGlobalIncome,
+      title: "Comparaison revenus, dépenses et épargnes",
+      chart: <Bar data={barChartData} options={barChartOptions} />,
     },
     {
-      name: "Dépenses totales",
-      Montant: budgets.summary.totalGlobalExpenses,
+      title: "Aperçu global des finances du foyer",
+      chart: <Line data={lineChartData} options={lineChartOptions} />,
     },
-    {
-      name: "Épargne totale",
-      Montant: budgets.summary.totalGlobalSavings,
-    },
-    { name: "Balance", Montant: budgets.summary.totalBalance },
   ];
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: false,
-    arrows: false,
+  useEffect(() => {
+    if (currentSlide >= slides.length) {
+      setCurrentSlide(0);
+    }
+  }, [peopleCount, currentSlide]);
+
+  const handleDragStart = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    setIsDragging(true);
+    setStartX("touches" in e ? e.touches[0].clientX : e.clientX);
   };
 
-  const PieChartTooltip: React.FC<CustomTooltipProps> = ({
-    active,
-    payload,
-  }) => {
-    if (active && payload && payload.length) {
-      const totalOutflows = pieChartData.reduce(
-        (sum, item) => sum + item.value,
-        0
-      );
-      const percentage = ((payload[0].value / totalOutflows) * 100).toFixed(2);
-      return (
-        <div className="custom-tooltip bg-white p-2 border border-gray-300">
-          <p className="label">{`${
-            payload[0].payload.name
-          } : ${payload[0].value.toFixed(2)} €`}</p>
-          <p className="intro">{`${percentage}%`}</p>
-        </div>
-      );
+  const handleDragMove = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    if (!isDragging) return;
+
+    const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const diff = startX - currentX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+      } else {
+        setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+      }
+      setIsDragging(false);
     }
-    return null;
   };
 
-  const BarChartTooltip: React.FC<CustomTooltipProps> = ({
-    active,
-    payload,
-    label,
-  }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip bg-white p-2 border border-gray-300">
-          <p className="label">{`${label}`}</p>
-          {payload.map((pld) => (
-            <p
-              key={pld.name}
-              style={{ color: COLORS[pld.name as keyof typeof COLORS] }}
-            >
-              {`${pld.name} : ${pld.value.toFixed(2)} €`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const LineChartTooltip: React.FC<CustomTooltipProps> = ({
-    active,
-    payload,
-    label,
-  }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip bg-white p-2 border border-gray-300">
-          <p className="label">{`${label} : ${payload[0].value.toFixed(
-            2
-          )} €`}</p>
-        </div>
-      );
-    }
-    return null;
+  const handleDragEnd = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -145,122 +103,37 @@ const BudgetCharts: React.FC = () => {
       infoTextKey="CHARTS"
       defaultOpenedSection={false}
     >
-      <div className="budget-charts-container">
-        <Slider {...sliderSettings}>
-          {people.length > 1 && (
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-center h-16">
-                Répartition des dépenses et épargnes au foyer
-              </h3>
-              <ResponsiveContainer width="100%" height={500}>
-                <PieChart>
-                  <Pie
-                    data={pieChartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={150}
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
-                  >
-                    {pieChartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          Object.values(COLORS)[
-                            index % Object.values(COLORS).length
-                          ]
-                        }
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<PieChartTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-center h-16">
-              Comparaison revenus, dépenses et épargnes
-            </h3>
-            <ResponsiveContainer width="100%" height={500}>
-              <BarChart data={barChartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<BarChartTooltip />} />
-                <Legend />
-                <Bar
-                  dataKey="Revenus personnels"
-                  stackId="a"
-                  fill={COLORS["Revenus personnels"]}
-                />
-                <Bar
-                  dataKey="Revenus du foyer"
-                  stackId="a"
-                  fill={COLORS["Revenus du foyer"]}
-                />
-                <Bar
-                  dataKey="Dépenses personnelles"
-                  stackId="b"
-                  fill={COLORS["Dépenses personnelles"]}
-                />
-                <Bar
-                  dataKey="Dépenses du foyer"
-                  stackId="b"
-                  fill={COLORS["Dépenses du foyer"]}
-                />
-                <Bar
-                  dataKey="Épargne personnelle"
-                  stackId="b"
-                  fill={COLORS["Épargne personnelle"]}
-                />
-                <Bar
-                  dataKey="Épargne du foyer"
-                  stackId="b"
-                  fill={COLORS["Épargne du foyer"]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-center h-16">
-              Aperçu global des finances du foyer
-            </h3>
-            <ResponsiveContainer width="100%" height={500}>
-              <LineChart data={lineChartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<LineChartTooltip />} />
-                <Legend />
-                <Line type="monotone" dataKey="Montant" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Slider>
+      <div
+        className="budget-charts-container relative touch-pan-y"
+        ref={sliderRef}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+      >
+        <h3 className="text-xl font-semibold mb-4 text-center h-16">
+          {slides[currentSlide].title}
+        </h3>
+        <div className="chart-container h-[500px]">
+          {slides[currentSlide].chart}
+        </div>
+        <div className="flex justify-center mt-4">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full mx-1 transition-all duration-300 ${
+                currentSlide === index
+                  ? "bg-blue-500"
+                  : "bg-gray-300 transform scale-75"
+              }`}
+            />
+          ))}
+        </div>
       </div>
-      <style jsx global>{`
-        .budget-charts-container {
-          padding-bottom: 40px;
-        }
-        .slick-dots {
-          bottom: -40px;
-        }
-        .slick-dots li button:before {
-          font-size: 12px;
-          color: #333;
-        }
-        .slick-dots li.slick-active button:before {
-          color: #0088fe;
-        }
-        .h-16 {
-          height: 4rem;
-        }
-      `}</style>
     </SectionHeader>
   );
 };

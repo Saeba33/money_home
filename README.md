@@ -31,6 +31,6 @@ BEA (Budget, Épargne, Analyse) est une application web conçue pour aider les u
 - React-icons
 - Sonner, pour les notifications
 - jspdf, pour l'export de PDF
-- react-slick, slick-carousel, recharts, pour les graphiques
+- chartsjs / react-chartjs-2, pour les graphiques
 
 

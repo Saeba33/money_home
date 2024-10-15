@@ -66,20 +66,6 @@ export interface InfoPopupProps {
   title: string;
 }
 
-export interface ExpandCollapseButtonProps {
-  isExpanded: boolean;
-  onClick: () => void;
-  expandedText: string;
-  collapsedText: string;
-}
-
-export interface ShowHideDetailsButtonProps {
-  isExpanded: boolean;
-  onClick: () => void;
-  expandedText: string;
-  collapsedText: string;
-}
-
 export interface PrivacyPolicyProps {
   isOpen: boolean;
   onClose: () => void;
@@ -197,3 +183,15 @@ export interface InfoTexts {
 }
 
 export type InfoTextKey = keyof InfoTexts;
+
+
+import {
+  ChartData as ChartJSData,
+  ChartOptions as ChartJSOptions,
+} from "chart.js";
+
+export interface BudgetChartsProps {}
+
+export type ChartData = ChartJSData<"pie" | "bar" | "line", number[], string>;
+
+export type CustomChartOptions = ChartJSOptions<"pie" | "bar" | "line">;

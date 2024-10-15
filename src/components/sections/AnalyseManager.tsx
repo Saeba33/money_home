@@ -1,12 +1,11 @@
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useAppContext } from "@/contexts/AppContext";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 
 const AnalyseManager: React.FC = () => {
   const { people, budgets } = useAppContext();
-  const [analysis, setAnalysis] = useState<string>("");
 
-  useEffect(() => {
+  const analysis = useMemo(() => {
     const generateAnalysis = () => {
       const isSinglePerson = people.length === 1;
       const { summary } = budgets;
@@ -106,7 +105,7 @@ const AnalyseManager: React.FC = () => {
       return analysis;
     };
 
-    setAnalysis(generateAnalysis());
+    return generateAnalysis();
   }, [people, budgets]);
 
   return (
@@ -115,7 +114,9 @@ const AnalyseManager: React.FC = () => {
       infoTextKey="ANALYSE"
       defaultOpenedSection={false}
     >
-      <pre className="whitespace-pre-wrap">{analysis}</pre>
+      <div id="analyse-financiere">
+        <pre className="whitespace-pre-wrap">{analysis}</pre>
+      </div>
     </SectionHeader>
   );
 };

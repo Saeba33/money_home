@@ -70,6 +70,7 @@ body {
 .btn {
   @apply w-full sm:w-auto;
   background-color: var(--secondary-color);
+  height: 38px;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -85,22 +86,4 @@ body {
 .select {
   @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
 }
-
-
-
-.custom-dots {
-  position: absolute;
-  bottom: -40px;
-  width: 100%;
-}
-
-.custom-dot {
-  transition: background-color 0.3s ease;
-}
-
-.custom-dot:hover {
-  background-color: #666 !important;
-}
-
-
 

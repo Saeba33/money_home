@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, useCallback } from "react";
 import { AppContextType } from "@/types/types";
 import Loading from "@/components/ui/Loading";
 import { usePeople } from "@/hooks/usePeople";
@@ -27,20 +27,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     distributionMode
   );
 
-const isLoading = useMemo(() => 
-    peopleHook.isLoading ||
-    expensesHook.isLoading ||
-    savingsHook.isLoading ||
-    distributionModeHook.isLoading ||
-    incomeHook.isLoading,
-    [peopleHook.isLoading, expensesHook.isLoading, savingsHook.isLoading, distributionModeHook.isLoading, incomeHook.isLoading]
+  const isLoading = useMemo(
+    () =>
+      peopleHook.isLoading ||
+      expensesHook.isLoading ||
+      savingsHook.isLoading ||
+      distributionModeHook.isLoading ||
+      incomeHook.isLoading,
+    [
+      peopleHook.isLoading,
+      expensesHook.isLoading,
+      savingsHook.isLoading,
+      distributionModeHook.isLoading,
+      incomeHook.isLoading,
+    ]
   );
 
-  const error = useMemo(() => 
-    peopleHook.error ||
-    expensesHook.error ||
-    savingsHook.error ||
-    incomeHook.error,
+  const error = useMemo(
+    () =>
+      peopleHook.error ||
+      expensesHook.error ||
+      savingsHook.error ||
+      incomeHook.error,
     [peopleHook.error, expensesHook.error, savingsHook.error, incomeHook.error]
   );
 
