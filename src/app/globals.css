@@ -2,15 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
-:root {
-  --primary-color: #4a90e2;
-  --secondary-color: #0acb27;
-  --background-color: #f4f7fc;
-  --text-color: #333333;
+
+/* General */
+body {
+  font-family: "Poppins", sans-serif;
 }
 
+
+/* Scrollbar */
 html {
   overflow-y: scroll;
 }
@@ -32,51 +34,36 @@ html {
 }
 
 
-body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
+/* Section */
 .section-container {
-  @apply flex flex-col;
-  background-color: var(--card-background);
-  border-radius: 8px;
+  @apply flex flex-col bg-white rounded-lg;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .section-header-base {
-  @apply flex items-center justify-between bg-blue-500 text-white p-3 cursor-pointer;
+  @apply flex items-center justify-between bg-blue-600 text-white p-3 cursor-pointer;
   transition: border-radius 0.3s ease;
 }
-
 .section-header-open {
   @apply section-header-base rounded-t-xl;
 }
-
 .section-header-closed {
   @apply section-header-base rounded-xl;
 }
-
 .section-title {
   @apply text-xl flex items-center pr-3;
   text-wrap: balance;
 }
-
 .section-info {
   @apply text-white text-2xl ml-3;
 }
-
 .section-content {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
-
 .section-content.open {
   max-height: 100%;
 }
-
 .section-content-inner {
   @apply p-3 rounded-b-xl;
 }
@@ -84,30 +71,46 @@ body {
   @apply w-full flex gap-3 mb-2;
 }
 
-.can {
-  @apply text-red-500 text-xl ml-2;
+
+/* Buttons */
+.standard-button {
+  @apply bg-blue-600 text-white font-medium px-4 py-2 rounded flex items-center shadow-lg ;
+}
+.add-button {
+  @apply w-full sm:w-auto font-medium bg-green-600 h-[38px] text-white border-none rounded-lg cursor-pointer py-1 px-2;
+}
+.delete-button {
+  @apply text-red-600 text-xl;
+}
+.cancel-button {
+  @apply bg-gray-300 text-black px-4 py-2 rounded;
+}
+.details-button {
+  @apply bg-gray-300 text-black px-2 py-1 rounded flex items-center mt-4 ;
+}
+.reset-button {
+  @apply bg-red-600 text-white font-medium px-4 py-2 rounded flex items-center shadow-lg ;
 }
 
-.btn {
-  @apply w-full sm:w-auto;
-  background-color: var(--secondary-color);
-  height: 38px;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
+
+
+/* Inputs */
 .input {
   @apply border rounded text-black p-2 text-sm;
 }
-
 .select {
   @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
 }
 
-.text-balance {
-  text-wrap: balance;
+
+/* Others */
+.list {
+  @apply text-sm italic mt-8 mb-4 border-b;
+}
+.loader {
+  @apply inline-block animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-500;
+}
+.warning {
+  @apply text-orange-600 text-sm;
 }

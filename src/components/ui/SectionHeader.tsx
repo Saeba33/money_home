@@ -36,7 +36,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         className={`section-header-${isOpen ? "open" : "closed"}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h2 className="section-title">
+        <h2 className="section-title font-medium">
           {title}
           <button
             onClick={toggleInfo}

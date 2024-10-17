@@ -141,6 +141,7 @@ const BudgetCharts: React.FC = () => {
           {slides.map((_, index) => (
             <button
               key={index}
+              aria-label="Changer de graphique"
               onClick={() => setCurrentSlide(index)}
               className={`w-3 h-3 rounded-full mx-1 transition-all duration-300 ${
                 currentSlide === index

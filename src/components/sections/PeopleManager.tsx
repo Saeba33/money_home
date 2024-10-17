@@ -125,7 +125,7 @@ const PeopleManager: React.FC = () => {
               </div>
               <button
                 onClick={() => prepareDeletePerson(person)}
-                className="can flex-shrink-0"
+                className="delete-button flex-shrink-0"
                 aria-label="Supprimer la personne"
               >
                 <FaRegTrashCan className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -152,7 +152,7 @@ const PeopleManager: React.FC = () => {
         {percentageWarning && (
           <div className="text-orange-500 mt-2">{percentageWarning}</div>
         )}
-        <button onClick={addPerson} className="btn w-full sm:w-auto">
+        <button onClick={addPerson} className="add-button w-full sm:w-auto">
           Ajouter une personne
         </button>
       </div>

@@ -37,16 +37,16 @@ const ExportModal: React.FC<ExportModalProps> = ({
             Exporter Analyse
           </label>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-between gap-2">
           <button
             onClick={onClose}
-            className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
+            className="cancel-button"
           >
             Annuler
           </button>
           <button
             onClick={() => onExport(exportBudget, exportAnalysis)}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="standard-button"
           >
             Exporter
           </button>

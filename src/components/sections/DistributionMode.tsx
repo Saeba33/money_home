@@ -6,10 +6,6 @@ import React from "react";
 const DistributionModeComponent: React.FC = () => {
   const { distributionMode, setDistributionMode, people } = useAppContext();
 
-  if (people.length <= 1) {
-    return null;
-  }
-
   const modes: DistributionMode[] = [
     "égalitaire",
     "proportionnel",

@@ -103,7 +103,7 @@ const BudgetManager: React.FC = () => {
             </button>
           )}
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-3 px-4 gap-x-4 gap-y-2">
+        <div className="grid grid-cols-1 xl:grid-cols-2 px-4 gap-x-4 gap-y-2">
           {summaryKeys.map((key) => (
             <div
               key={key}
@@ -143,7 +143,7 @@ const BudgetManager: React.FC = () => {
                     {budget.name} ({budget.percentage.toFixed(1)}%)
                   </h4>
                 )}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-x-4 gap-y-2">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-2">
                   {(Object.keys(budgetTranslations) as Array<keyof Budget>)
                     .filter(
                       (key) =>
@@ -175,7 +175,7 @@ const BudgetManager: React.FC = () => {
                 </div>
                 <button
                   onClick={() => toggleBudgetDetails(budget.name)}
-                  className="mt-4 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 flex items-center"
+                  className="details-button"
                 >
                   {expandedBudgets.includes(budget.name) ? (
                     <>

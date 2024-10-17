@@ -1,7 +1,7 @@
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
 import React, { useMemo } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { useAppContext } from "@/contexts/AppContext";
-import SectionHeader from "@/components/ui/SectionHeader";
 
 const SavingsManager: React.FC = () => {
   const {
@@ -47,7 +47,10 @@ const SavingsManager: React.FC = () => {
             type="number"
             value={draftSaving.amount || ""}
             onChange={(e) =>
-              updateDraftSaving({ ...draftSaving, amount: Number(e.target.value) })
+              updateDraftSaving({
+                ...draftSaving,
+                amount: Number(e.target.value),
+              })
             }
             className="input w-full sm:w-32"
             placeholder="Montant"
@@ -65,7 +68,7 @@ const SavingsManager: React.FC = () => {
           />
           <button
             onClick={addSaving}
-            className="btn"
+            className="add-button"
             aria-label="Ajouter une épargne"
           >
             Ajouter
@@ -81,8 +84,7 @@ const SavingsManager: React.FC = () => {
 
     return (
       <>
-        <h3 className="font-bold mt-4 mb-2">Liste des épargnes saisies</h3>
-        <hr className="mb-4" />
+        <h3 className="list">Liste des épargnes saisies</h3>
         {savings.map((saving) => (
           <div
             key={saving.id}
@@ -143,7 +145,7 @@ const SavingsManager: React.FC = () => {
               />
               <button
                 onClick={() => deleteSaving(saving.id)}
-                className="can"
+                className="delete-button"
                 aria-label="Supprimer l'épargne"
               >
                 <FaRegTrashCan />

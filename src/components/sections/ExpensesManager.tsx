@@ -1,7 +1,7 @@
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useAppContext } from "@/contexts/AppContext";
 import React, { useMemo } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { useAppContext } from "@/contexts/AppContext";
-import SectionHeader from "@/components/ui/SectionHeader";
 
 const ExpensesManager: React.FC = () => {
   const {
@@ -31,7 +31,10 @@ const ExpensesManager: React.FC = () => {
           <select
             value={draftExpense.assignedTo}
             onChange={(e) =>
-              updateDraftExpense({ ...draftExpense, assignedTo: e.target.value })
+              updateDraftExpense({
+                ...draftExpense,
+                assignedTo: e.target.value,
+              })
             }
             className="select"
             aria-label="Assigné à"
@@ -52,7 +55,7 @@ const ExpensesManager: React.FC = () => {
                 amount: Number(e.target.value),
               })
             }
-            className="input"
+            className="input w-full sm:w-32"
             placeholder="Montant"
             aria-label="Montant"
           />
@@ -68,7 +71,7 @@ const ExpensesManager: React.FC = () => {
           />
           <button
             onClick={addExpense}
-            className="btn"
+            className="add-button"
             aria-label="Ajouter une dépense"
           >
             Ajouter
@@ -84,8 +87,7 @@ const ExpensesManager: React.FC = () => {
 
     return (
       <>
-        <h3 className="font-bold mt-4 mb-2">Liste des dépenses saisies</h3>
-        <hr className="mb-4" />
+        <h3 className="list">Liste des dépenses saisies</h3>
         {expenses.map((expense) => (
           <div
             key={expense.id}
@@ -150,7 +152,7 @@ const ExpensesManager: React.FC = () => {
               />
               <button
                 onClick={() => deleteExpense(expense.id)}
-                className="can"
+                className="delete-button"
                 aria-label="Supprimer la dépense"
               >
                 <FaRegTrashCan />

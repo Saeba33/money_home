@@ -14,7 +14,7 @@ const ResetButton: React.FC = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-red-500 text-white p-2 rounded flex items-center"
+        className="reset-button"
       >
         <FaRedo className="mr-2" />
         Réinitialiser les données
@@ -39,7 +39,7 @@ const ResetButton: React.FC = () => {
               </button>
               <button
                 onClick={handleReset}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 font-medium"
               >
                 Réinitialiser
               </button>

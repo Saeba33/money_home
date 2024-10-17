@@ -68,7 +68,7 @@ const IncomeManager: React.FC = () => {
           />
           <button
             onClick={addIncome}
-            className="btn"
+            className="add-button"
             aria-label="Ajouter un revenu"
           >
             Ajouter
@@ -84,8 +84,7 @@ const IncomeManager: React.FC = () => {
 
     return (
       <>
-        <h3 className="font-bold mt-4 mb-2">Liste des revenus saisis</h3>
-        <hr className="mb-4" />
+        <h3 className="list">Liste des revenus saisis</h3>
         {income.map((income) => (
           <div
             key={income.id}
@@ -149,7 +148,7 @@ const IncomeManager: React.FC = () => {
               />
               <button
                 onClick={() => deleteIncome(income.id)}
-                className="can"
+                className="delete-button"
                 aria-label="Supprimer le revenu"
               >
                 <FaRegTrashCan />
