@@ -1,3 +1,9 @@
+import {
+  ChartData as ChartJSData,
+  ChartOptions as ChartJSOptions,
+} from "chart.js";
+import { jsPDF } from "jspdf";
+
 // Types de base
 export type DistributionMode = "égalitaire" | "proportionnel" | "personnalisé";
 
@@ -162,7 +168,6 @@ export interface AppContextType {
 
   isLoading: boolean;
   error: Error | null;
-
 }
 
 // Types pour les textes d'information
@@ -185,13 +190,36 @@ export interface InfoTexts {
 export type InfoTextKey = keyof InfoTexts;
 
 
-import {
-  ChartData as ChartJSData,
-  ChartOptions as ChartJSOptions,
-} from "chart.js";
+export type ChartDataType = ChartJSData<
+  "pie" | "bar" | "line",
+  number[],
+  string
+>;
+export type ChartOptionsType = ChartJSOptions<"pie" | "bar" | "line">;
 
-export interface BudgetChartsProps {}
+// Types pour jsPDF
+export interface PubSub {
+  subscribe: (event: string, callback: (...args: unknown[]) => void) => void;
+  unsubscribe: (event: string, callback: (...args: unknown[]) => void) => void;
+  publish: (event: string, ...args: unknown[]) => void;
+}
 
-export type ChartData = ChartJSData<"pie" | "bar" | "line", number[], string>;
+export interface PageSize {
+  width: number;
+  getWidth: () => number;
+  height: number;
+  getHeight: () => number;
+}
 
-export type CustomChartOptions = ChartJSOptions<"pie" | "bar" | "line">;
+export interface Internal {
+  events: PubSub;
+  scaleFactor: number;
+  pageSize: PageSize;
+  pages: number[];
+  getEncryptor(objectId: number): (data: string) => string;
+  getNumberOfPages(): number;
+}
+
+export type ExtendedJsPDF = jsPDF & {
+  internal: Internal;
+};

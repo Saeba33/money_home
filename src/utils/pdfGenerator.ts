@@ -1,9 +1,14 @@
-import jsPDF from "jspdf";
-import { Budget, BudgetSummary, DistributionMode } from "@/types/types";
 import {
+  budgetTranslations,
   summaryTranslations,
-  budgetTranslations
 } from "@/constants/translations";
+import {
+  Budget,
+  BudgetSummary,
+  DistributionMode,
+  ExtendedJsPDF,
+} from "@/types/types";
+import jsPDF from "jspdf";
 
 export const generatePDFReport = (
   budgets: { budgets: Budget[]; summary: BudgetSummary },
@@ -11,41 +16,39 @@ export const generatePDFReport = (
   exportBudget: boolean,
   exportAnalysis: boolean
 ) => {
-  const doc = new jsPDF();
-  let yPosition = 20;
+  const doc = new jsPDF() as ExtendedJsPDF;
+  let yPosition = 10;
 
-  // Couleurs
   const primaryColor = "#3498db";
   const secondaryColor = "#2c3e50";
   const textColor = "#333333";
 
-  // Fonction pour ajouter un titre de section
   const addSectionTitle = (text: string) => {
     doc.setFillColor(primaryColor);
     doc.rect(0, yPosition, 210, 10, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.setFont("poppins", "bold");
+    doc.setFont("helvetica", "bold");
     doc.text(text, 10, yPosition + 7);
     doc.setTextColor(textColor);
-    doc.setFont("poppins", "normal");
-    yPosition += 15;
+    doc.setFont("helvetica", "normal");
+    yPosition += 20;
   };
 
-  // Fonction pour ajouter du texte
   const addText = (
     text: string,
     fontSize: number = 10,
     indent: number = 0,
-    isBold: boolean = false
+    isBold: boolean = false,
+    isItalic: boolean = false
   ) => {
     doc.setFontSize(fontSize);
-    doc.setFont("helvetica", isBold ? "bold" : "normal");
+    doc.setFont("helvetica", isBold ? "bold" : isItalic ? "italic" : "normal");
     const splitText = doc.splitTextToSize(text, 190 - indent);
     splitText.forEach((line: string) => {
       if (yPosition > 280) {
         doc.addPage();
-        yPosition = 20;
+        yPosition = 5;
       }
       doc.text(line, 10 + indent, yPosition);
       yPosition += fontSize * 0.5;
@@ -53,23 +56,24 @@ export const generatePDFReport = (
     yPosition += 5;
   };
 
-  // En-tête
   doc.setFillColor(secondaryColor);
-  doc.rect(0, 0, 210, 40, "F");
+  doc.rect(0, 0, 210, 297, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24);
+  doc.setFontSize(36);
   doc.setFont("helvetica", "bold");
-  doc.text("Rapport Financier BEA", 105, 25, { align: "center" });
-  doc.setFontSize(12);
+  doc.text("Rapport Financier BEA", 105, 140, { align: "center" });
+  doc.setFontSize(18);
   doc.setFont("helvetica", "normal");
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 35, {
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 160, {
     align: "center",
   });
-  yPosition = 50;
 
   if (exportBudget) {
+    doc.addPage();
+    yPosition = 5;
     addSectionTitle("Rapport du Budget");
-    addText(`Mode de distribution : ${distributionMode}`, 12, 0, true);
+    addText(`Mode de distribution : ${distributionMode}`, 12, 0, false, true);
+    yPosition += 5;
     addText("Résumé global :", 12, 0, true);
     Object.entries(budgets.summary).forEach(([key, value]) => {
       const translatedKey =
@@ -77,8 +81,13 @@ export const generatePDFReport = (
       addText(`${translatedKey}: ${value.toFixed(2)} €`, 10, 5);
     });
 
+    yPosition += 5;
     addText("Budgets individuels :", 12, 0, true);
     budgets.budgets.forEach((budget) => {
+      if (yPosition > 240) {
+        doc.addPage();
+        yPosition = 10;
+      }
       addText(`${budget.name}:`, 11, 0, true);
       Object.entries(budget).forEach(([key, value]) => {
         if (key !== "name" && typeof value === "number") {
@@ -91,7 +100,8 @@ export const generatePDFReport = (
   }
 
   if (exportAnalysis) {
-    if (yPosition > 200) doc.addPage();
+    doc.addPage();
+    yPosition = 10;
     addSectionTitle("Analyse Financière");
     const analysisElement = document.querySelector("#analyse-financiere");
     if (analysisElement) {
@@ -102,7 +112,6 @@ export const generatePDFReport = (
     }
   }
 
-  // Numéros de page
   const totalPages = doc.internal.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);

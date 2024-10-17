@@ -74,8 +74,8 @@ export const INFO_TEXTS = {
   },
 
   DISTRIBUTION: {
-    description: `Choisissez parmi trois modes de répartition des charges :\n\n • Égalitaire : chaque personne contribue de manière égale aux charges du foyer, indépendamment des revenus.\n\n • Proportionnel : La contribution de chaque personne est calculée en fonction de ses revenus. Il est donc essentiel de saisir correctement les revenus pour garantir des calculs précis.\n\n • Personnalisé : Vous définissez manuellement la part de contribution de chaque personne grâce à la jauge personnalisée dans la section 'Personnes dans le foyer'. Les dépenses sont alors réparties en fonction des pourcentages que vous avez attribués.`,
-    example: `\nNota Bene : les dépenses personnelles (affectées à une personne) ne sont pas impactées par le mode de répartition. Seules les dépenses dites communes (affectées au "foyer") sont concernées.`,
+    description: `Choisissez parmi trois modes de répartition des charges :\n\n • Égalitaire : chaque personne contribue de manière égale aux charges (dépenses et épargne) affectées au foyer, indépendamment des revenus.\n\n • Proportionnel : La contribution de chaque personne est calculée en fonction de ses revenus. Il est donc essentiel de saisir correctement les revenus pour garantir des calculs précis.\n\n • Personnalisé : Vous définissez manuellement la part de contribution de chaque personne grâce à la jauge personnalisée dans la section 'Personnes dans le foyer'. Les dépenses sont alors réparties en fonction des pourcentages que vous avez attribués.`,
+    example: `\nNota Bene : les dépenses et épargnes personnelles (affectées à une personne) ne sont pas impactées par le mode de répartition. Seules les dépenses et épargnes dites communes (affectées au "foyer") sont concernées.`,
   },
 
   BUDGET: {

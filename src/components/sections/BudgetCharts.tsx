@@ -14,6 +14,7 @@ import {
 import { Pie, Bar, Line } from "react-chartjs-2";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useCharts } from "@/hooks/useCharts";
+import { ChartDataType, ChartOptionsType } from "@/types/types";
 
 ChartJS.register(
   ArcElement,
@@ -43,22 +44,37 @@ const BudgetCharts: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
 
-  const slides = [
+  const slides: { title: string; chart: JSX.Element }[] = [
     ...(peopleCount > 1
       ? [
           {
             title: "Répartition des dépenses et épargnes par personne",
-            chart: <Pie data={pieChartData} options={pieChartOptions} />,
+            chart: (
+              <Pie
+                data={pieChartData as ChartDataType}
+                options={pieChartOptions as ChartOptionsType}
+              />
+            ),
           },
         ]
       : []),
     {
       title: "Comparaison revenus, dépenses et épargnes",
-      chart: <Bar data={barChartData} options={barChartOptions} />,
+      chart: (
+        <Bar
+          data={barChartData as ChartDataType}
+          options={barChartOptions as ChartOptionsType}
+        />
+      ),
     },
     {
       title: "Aperçu global des finances du foyer",
-      chart: <Line data={lineChartData} options={lineChartOptions} />,
+      chart: (
+        <Line
+          data={lineChartData as ChartDataType}
+          options={lineChartOptions as ChartOptionsType}
+        />
+      ),
     },
   ];
 
@@ -66,7 +82,7 @@ const BudgetCharts: React.FC = () => {
     if (currentSlide >= slides.length) {
       setCurrentSlide(0);
     }
-  }, [peopleCount, currentSlide]);
+  }, [peopleCount, currentSlide, slides.length]);
 
   const handleDragStart = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>

@@ -17,7 +17,7 @@ const ExportButton: React.FC = () => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded mt-4 flex items-center shadow-md hover:shadow-lg transition-shadow duration-300"
+        className="bg-blue-500 text-white px-4 py-2 rounded flex items-center shadow-md hover:shadow-lg transition-shadow duration-300"
       >
         <FaFileExport className="mr-2" />
         Exporter en PDF

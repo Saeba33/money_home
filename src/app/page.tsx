@@ -39,7 +39,7 @@ const AppContent: React.FC = () => {
               </>
             )}
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center lg:justify-between mt-6 gap-2 justify-center">
             <ExportButton />
             <ResetButton />
           </div>
