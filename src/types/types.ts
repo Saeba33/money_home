@@ -1,11 +1,9 @@
-import {
-  ChartData as ChartJSData,
-  ChartOptions as ChartJSOptions,
-} from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 import { jsPDF } from "jspdf";
 
 // Types de base
 export type DistributionMode = "égalitaire" | "proportionnel" | "personnalisé";
+export type InfoTextKey = keyof InfoTexts;
 
 // Interfaces pour les entités principales
 export interface Person {
@@ -57,6 +55,23 @@ export interface BudgetSummary {
   totalBalance: number;
 }
 
+// Interfaces pour les textes d'information
+export interface InfoText {
+  description: string;
+  example?: string;
+}
+
+export interface InfoTexts {
+  PEOPLE: InfoText;
+  INCOME: InfoText;
+  SAVINGS: InfoText;
+  EXPENSES: InfoText;
+  DISTRIBUTION: InfoText;
+  BUDGET: InfoText;
+  CHARTS: InfoText;
+  ANALYSE: InfoText;
+}
+
 // Interfaces pour les composants UI
 export interface SectionHeaderProps {
   title: string;
@@ -90,7 +105,7 @@ export interface DeletePersonModalProps {
 export interface ExportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onExport: (exportBudgetManager: boolean, exportBudgetChart: boolean) => void;
+  onExport: (exportBudget: boolean, exportAnalysis: boolean) => void;
 }
 
 export interface CustomTooltipProps {
@@ -170,32 +185,9 @@ export interface AppContextType {
   error: Error | null;
 }
 
-// Types pour les textes d'information
-export interface InfoText {
-  description: string;
-  example?: string;
-}
-
-export interface InfoTexts {
-  PEOPLE: InfoText;
-  INCOME: InfoText;
-  SAVINGS: InfoText;
-  EXPENSES: InfoText;
-  DISTRIBUTION: InfoText;
-  BUDGET: InfoText;
-  CHARTS: InfoText;
-  ANALYSE: InfoText;
-}
-
-export type InfoTextKey = keyof InfoTexts;
-
-
-export type ChartDataType = ChartJSData<
-  "pie" | "bar" | "line",
-  number[],
-  string
->;
-export type ChartOptionsType = ChartJSOptions<"pie" | "bar" | "line">;
+// Types pour les graphiques
+export type ChartDataType = ChartData<"pie" | "bar" | "line", number[], string>;
+export type ChartOptionsType = ChartOptions<"pie" | "bar" | "line">;
 
 // Types pour jsPDF
 export interface PubSub {

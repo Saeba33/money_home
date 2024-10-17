@@ -8,7 +8,6 @@ BEA (Budget, Épargne, Analyse) est une application web conçue pour aider les u
 
 - **Gestion des revenus** : Saisie et suivi des différentes sources de revenus.
 - **Suivi des dépenses** : Enregistrement des frais, incluant les charges fixes et les dépenses courantes.
-- **Planification de l'épargne** : Définition et suivi des objectifs d'épargne.
 - **Analyse budgétaire** : Visualisation de la répartition des dépenses et de l'épargne.
 - **Modes de répartition** : Options pour répartir les dépenses (égalitaire, proportionnel, personnalisé).
 - **Graphiques interactifs** : Représentation visuelle des données financières.
@@ -19,8 +18,7 @@ BEA (Budget, Épargne, Analyse) est une application web conçue pour aider les u
 - **Budget** : Vue d'ensemble de la situation financière.
 - **Revenus** : Gestion des entrées d'argent.
 - **Dépenses** : Suivi de toutes les sorties d'argent, incluant :
-  - **Frais** : Charges fixes et dépenses courantes.
-  - **Épargne** : Montants mis de côté.
+- **Épargne** : Montants mis de côté.
 
 ## Technologies utilisées
 

@@ -61,11 +61,16 @@ const BudgetManager: React.FC = () => {
         const personalAmount =
           item.assignedTo === "foyer" ? amount * (percentage / 100) : amount;
         return (
-          <div key={item.id}>
-            {item.name} : {personalAmount.toFixed(2)} €
-            {item.assignedTo === "foyer" &&
-              people.length > 1 &&
-              ` (${percentage.toFixed(1)}% de ${amount.toFixed(2)} €)`}
+          <div key={item.id} className="flex items-baseline">
+            <span className="mr-1">{item.name} :</span>
+            <span className="">
+              {personalAmount.toFixed(2)} €
+              {item.assignedTo === "foyer" && people.length > 1 && (
+                <span className="text-sm text-gray-600 ml-1">
+                  ({percentage.toFixed(1)}% de {amount.toFixed(2)} €)
+                </span>
+              )}
+            </span>
           </div>
         );
       });
@@ -98,17 +103,20 @@ const BudgetManager: React.FC = () => {
             </button>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-3 px-4 gap-x-4 gap-y-2">
           {summaryKeys.map((key) => (
             <div
               key={key}
-              className={
+              className={`flex text-balance items-baseline ${
                 key === "totalBalance"
                   ? getBalanceColor(budgets.summary[key])
                   : ""
-              }
+              }`}
             >
-              {summaryTranslations[key]} : {budgets.summary[key].toFixed(2)} €
+              <span className="mr-2">{summaryTranslations[key]} :</span>
+              <span className="font-medium">
+                {budgets.summary[key].toFixed(2)} €
+              </span>
             </div>
           ))}
         </div>
@@ -121,7 +129,7 @@ const BudgetManager: React.FC = () => {
         {showPersonalBudgets && (
           <>
             {people.length > 1 && (
-              <h3 className="text-lg font-semibold mb-2">
+              <h3 className="text-lg font-semibold mb-2 mt-6">
                 Répartition individuelle
               </h3>
             )}
@@ -135,7 +143,7 @@ const BudgetManager: React.FC = () => {
                     {budget.name} ({budget.percentage.toFixed(1)}%)
                   </h4>
                 )}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-x-4 gap-y-2">
                   {(Object.keys(budgetTranslations) as Array<keyof Budget>)
                     .filter(
                       (key) =>
@@ -147,23 +155,27 @@ const BudgetManager: React.FC = () => {
                     .map((key) => (
                       <div
                         key={key}
-                        className={
+                        className={`flex text-balance items-baseline ${
                           key === "balance"
                             ? getBalanceColor(budget[key] as number)
                             : ""
-                        }
+                        }`}
                       >
-                        {budgetTranslations[key]} :{" "}
-                        {typeof budget[key] === "number"
-                          ? (budget[key] as number).toFixed(2)
-                          : budget[key]}{" "}
-                        €
+                        <span className="mr-2">
+                          {budgetTranslations[key]} :
+                        </span>
+                        <span className="font-medium">
+                          {typeof budget[key] === "number"
+                            ? (budget[key] as number).toFixed(2)
+                            : budget[key]}{" "}
+                          €
+                        </span>
                       </div>
                     ))}
                 </div>
                 <button
                   onClick={() => toggleBudgetDetails(budget.name)}
-                  className="mt-2 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 flex items-center"
+                  className="mt-4 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 flex items-center"
                 >
                   {expandedBudgets.includes(budget.name) ? (
                     <>
@@ -180,38 +192,44 @@ const BudgetManager: React.FC = () => {
                   style={{ opacity: detailOpacity[budget.name] || 0 }}
                 >
                   {expandedBudgets.includes(budget.name) && (
-                    <>
-                      <h5 className="font-medium">Revenus</h5>
-                      {renderDetailedItems(
-                        income.filter(
-                          (r) =>
-                            r.assignedTo === budget.name ||
-                            r.assignedTo === "foyer"
-                        ),
-                        budget.name,
-                        budget.percentage
-                      )}
-                      <h5 className="font-medium mt-2">Épargne</h5>
-                      {renderDetailedItems(
-                        savings.filter(
-                          (s) =>
-                            s.assignedTo === budget.name ||
-                            s.assignedTo === "foyer"
-                        ),
-                        budget.name,
-                        budget.percentage
-                      )}
-                      <h5 className="font-medium mt-2">Dépenses</h5>
-                      {renderDetailedItems(
-                        expenses.filter(
-                          (e) =>
-                            e.assignedTo === budget.name ||
-                            e.assignedTo === "foyer"
-                        ),
-                        budget.name,
-                        budget.percentage
-                      )}
-                    </>
+                    <div className="space-y-4">
+                      <div>
+                        <h5 className="font-medium mb-2">Revenus</h5>
+                        {renderDetailedItems(
+                          income.filter(
+                            (r) =>
+                              r.assignedTo === budget.name ||
+                              r.assignedTo === "foyer"
+                          ),
+                          budget.name,
+                          budget.percentage
+                        )}
+                      </div>
+                      <div>
+                        <h5 className="font-medium mb-2">Épargne</h5>
+                        {renderDetailedItems(
+                          savings.filter(
+                            (s) =>
+                              s.assignedTo === budget.name ||
+                              s.assignedTo === "foyer"
+                          ),
+                          budget.name,
+                          budget.percentage
+                        )}
+                      </div>
+                      <div>
+                        <h5 className="font-medium mb-2">Dépenses</h5>
+                        {renderDetailedItems(
+                          expenses.filter(
+                            (e) =>
+                              e.assignedTo === budget.name ||
+                              e.assignedTo === "foyer"
+                          ),
+                          budget.name,
+                          budget.percentage
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

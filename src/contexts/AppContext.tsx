@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useCallback } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { AppContextType } from "@/types/types";
 import Loading from "@/components/ui/Loading";
 import { usePeople } from "@/hooks/usePeople";

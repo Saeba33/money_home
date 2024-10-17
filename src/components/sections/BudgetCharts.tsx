@@ -10,11 +10,12 @@ import {
   PointElement,
   LineElement,
   Title,
+  ChartData,
+  ChartOptions,
 } from "chart.js";
 import { Pie, Bar, Line } from "react-chartjs-2";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useCharts } from "@/hooks/useCharts";
-import { ChartDataType, ChartOptionsType } from "@/types/types";
 
 ChartJS.register(
   ArcElement,
@@ -51,8 +52,8 @@ const BudgetCharts: React.FC = () => {
             title: "Répartition des dépenses et épargnes par personne",
             chart: (
               <Pie
-                data={pieChartData as ChartDataType}
-                options={pieChartOptions as ChartOptionsType}
+                data={pieChartData as ChartData<"pie", number[], string>}
+                options={pieChartOptions as ChartOptions<"pie">}
               />
             ),
           },
@@ -62,8 +63,8 @@ const BudgetCharts: React.FC = () => {
       title: "Comparaison revenus, dépenses et épargnes",
       chart: (
         <Bar
-          data={barChartData as ChartDataType}
-          options={barChartOptions as ChartOptionsType}
+          data={barChartData as ChartData<"bar", number[], string>}
+          options={barChartOptions as ChartOptions<"bar">}
         />
       ),
     },
@@ -71,8 +72,8 @@ const BudgetCharts: React.FC = () => {
       title: "Aperçu global des finances du foyer",
       chart: (
         <Line
-          data={lineChartData as ChartDataType}
-          options={lineChartOptions as ChartOptionsType}
+          data={lineChartData as ChartData<"line", number[], string>}
+          options={lineChartOptions as ChartOptions<"line">}
         />
       ),
     },

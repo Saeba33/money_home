@@ -1,13 +1,7 @@
 import React from "react";
-import { Person, FinancialItem } from "@/types/types";
+import { DeletePersonModalProps } from "@/types/types";
 
-interface DeletePersonModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  person: Person;
-  financialItems: FinancialItem[];
-  onConfirm: (action: "delete" | "reassign") => void;
-}
+
 
 const DeletePersonModal: React.FC<DeletePersonModalProps> = ({
   isOpen,
@@ -22,7 +16,7 @@ const DeletePersonModal: React.FC<DeletePersonModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+      <div className="bg-white p-6 rounded-lg max-w-lg mx-4 w-full">
         <h2 className="text-xl font-bold mb-4">Supprimer {person.name}</h2>
         {hasFinancialData ? (
           <p className="text-orange-500 mb-4">

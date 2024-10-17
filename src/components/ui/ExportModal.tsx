@@ -1,10 +1,5 @@
+import { ExportModalProps } from "@/types/types";
 import React, { useState } from "react";
-
-interface ExportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onExport: (exportBudget: boolean, exportAnalysis: boolean) => void;
-}
 
 const ExportModal: React.FC<ExportModalProps> = ({
   isOpen,

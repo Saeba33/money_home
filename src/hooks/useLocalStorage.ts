@@ -9,7 +9,6 @@ export function useLocalStorage<T>(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Use a ref to store the initial value
   const initialValueRef = useRef(initialValue);
 
   const loadFromLocalStorage = useCallback(() => {
@@ -29,8 +28,8 @@ export function useLocalStorage<T>(
     } finally {
       setIsLoading(false);
     }
-  }, [key]); // Remove initialValue from dependencies
-
+  }, [key]); 
+  
   useEffect(() => {
     loadFromLocalStorage();
   }, [loadFromLocalStorage]);

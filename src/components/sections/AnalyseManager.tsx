@@ -1,7 +1,7 @@
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useAppContext } from "@/contexts/AppContext";
-import React, { useCallback, useEffect, useState } from "react";
 import { FinancialItem } from "@/types/types";
+import React, { useCallback, useEffect, useState } from "react";
 
 const AnalyseManager: React.FC = () => {
   const { people, budgets, expenses, distributionMode } = useAppContext();
@@ -49,9 +49,7 @@ const AnalyseManager: React.FC = () => {
       );
     }
 
-    // Si nous arrivons ici, c'est qu'il y a au moins 3 postes de dépenses valides
-    // Nous pouvons donc procéder à une analyse plus détaillée
-
+    // Si + de 3 postes de dépenses valides :
     const expensePercentage = (totalExpenses / totalIncome) * 100;
     const savingsRate = (totalSavings / totalIncome) * 100;
 
