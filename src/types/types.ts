@@ -133,6 +133,12 @@ export type UseLocalStorageReturn<T> = [
   Error | null
 ];
 
+export type ColorKey = "amber" | "green" | "red";
+
+export type ColorClasses = {
+  [key in ColorKey]: string;
+};
+
 // Types pour le contexte de l'application
 export interface AppContextType {
   // Gestion des personnes

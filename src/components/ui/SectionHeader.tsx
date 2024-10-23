@@ -15,7 +15,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const updateMaxHeight = () => {
     if (contentRef.current) {
       if (isOpen) {
         contentRef.current.style.maxHeight = `${contentRef.current.scrollHeight}px`;
@@ -23,6 +23,20 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         contentRef.current.style.maxHeight = "0";
       }
     }
+  };
+
+  useEffect(() => {
+    updateMaxHeight();
+
+    const handleResize = () => {
+      updateMaxHeight();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [isOpen, children]);
 
   const toggleInfo = (e: React.MouseEvent) => {
@@ -30,11 +44,15 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     setIsInfoPopupOpen(!isInfoPopupOpen);
   };
 
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="section-container">
       <div
         className={`section-header-${isOpen ? "open" : "closed"}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
       >
         <h2 className="section-title font-medium">
           {title}

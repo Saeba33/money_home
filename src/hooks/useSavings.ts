@@ -26,10 +26,10 @@ export const useSavings = () => {
   const addSaving = useCallback(() => {
     if (!draftSaving.name || draftSaving.amount === undefined) {
       const missingFields = [];
-      if (!draftSaving.name) missingFields.push("nom de l'épargne");
-      if (draftSaving.amount === undefined) missingFields.push("montant");
+      if (!draftSaving.name) missingFields.push("le nom de l'épargne");
+      if (draftSaving.amount === undefined) missingFields.push("un montant");
       showWarningNotification(
-        `Veuillez renseigner : ${missingFields.join(", ")}`
+        `Veuillez renseigner ${missingFields.join(" et ")} !`
       );
       return;
     }

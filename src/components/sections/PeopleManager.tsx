@@ -116,7 +116,7 @@ const PeopleManager: React.FC = () => {
                   onChange={(e) =>
                     updatePersonPercentage(person.id, Number(e.target.value))
                   }
-                  className="w-full"
+                  className="w-full cursor-pointer"
                   aria-label="Pourcentage de la personne"
                 />
                 <span className="ml-1 text-xs sm:text-sm w-10 text-right">
@@ -150,7 +150,7 @@ const PeopleManager: React.FC = () => {
       <div className="space-y-2">
         {memoizedPeopleList}
         {percentageWarning && (
-          <div className="text-orange-500 mt-2">{percentageWarning}</div>
+          <div className="warning py-2">{percentageWarning}</div>
         )}
         <button onClick={addPerson} className="add-button w-full sm:w-auto">
           Ajouter une personne

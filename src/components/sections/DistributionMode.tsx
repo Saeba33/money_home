@@ -29,10 +29,10 @@ const DistributionModeComponent: React.FC = () => {
               className="hidden"
             />
             <span
-              className={`px-3 py-1 rounded cursor-pointer ${
+              className={`${
                 distributionMode === mode
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200"
+                  ? "option-button-selected"
+                  : "option-button-not-selected"
               }`}
             >
               {mode.charAt(0).toUpperCase() + mode.slice(1)}

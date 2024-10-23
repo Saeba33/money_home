@@ -38,6 +38,7 @@ const BudgetCharts: React.FC = () => {
     barChartOptions,
     lineChartOptions,
     peopleCount,
+    shouldShowPieChart,
   } = useCharts();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,7 +47,7 @@ const BudgetCharts: React.FC = () => {
   const [startX, setStartX] = useState(0);
 
   const slides: { title: string; chart: JSX.Element }[] = [
-    ...(peopleCount > 1
+    ...(shouldShowPieChart
       ? [
           {
             title: "Répartition des dépenses et épargnes par personne",
@@ -83,7 +84,7 @@ const BudgetCharts: React.FC = () => {
     if (currentSlide >= slides.length) {
       setCurrentSlide(0);
     }
-  }, [peopleCount, currentSlide, slides.length]);
+  }, [peopleCount, currentSlide, slides.length, shouldShowPieChart]);
 
   const handleDragStart = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>

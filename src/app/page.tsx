@@ -61,7 +61,7 @@ const AppContent: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="3xl:hidden flex flex-wrap items-center mt-10 mb-12 gap-2 justify-between">
+          <div className="3xl:hidden flex flex-wrap items-center mt-10 mb-12 gap-2 justify-center sm:justify-between">
             <ExportButton />
             <ResetButton />
           </div>

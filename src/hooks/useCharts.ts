@@ -1,9 +1,22 @@
+import {
+  COLORS_CHART_1,
+  COLORS_CHART_2,
+  COLORS_CHART_3,
+} from "@/constants/charts";
 import { useAppContext } from "@/contexts/AppContext";
 import { ChartData, ChartOptions } from "chart.js";
-import { COLORS_CHART_1, COLORS_CHART_2, COLORS_CHART_3 } from "@/constants/charts";
+import { useMemo } from "react";
 
 export const useCharts = () => {
-  const { budgets, people, distributionMode } = useAppContext();
+  const { budgets, people, distributionMode, expenses, savings } =
+    useAppContext();
+
+  const shouldShowPieChart = useMemo(() => {
+    return (
+      people.length > 1 &&
+      budgets.budgets.some((budget) => budget.totalOutflows > 0)
+    );
+  }, [people, budgets]);
 
   const pieChartData: ChartData<"pie", number[], string> = {
     labels: budgets.budgets.map((b) => b.name),
@@ -201,5 +214,6 @@ export const useCharts = () => {
     barChartOptions,
     lineChartOptions,
     peopleCount: people.length,
+    shouldShowPieChart,
   };
 };

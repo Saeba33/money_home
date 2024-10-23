@@ -32,14 +32,14 @@ export const INITIAL_EXPENSES = [
   },
   {
     id: 2,
-    name: "Eau",
+    name: "Électricité",
     amount: undefined,
     assignedTo: "foyer",
     comments: "",
   },
   {
     id: 3,
-    name: "Électricité",
+    name: "Eau",
     amount: undefined,
     assignedTo: "foyer",
     comments: "",
@@ -47,6 +47,41 @@ export const INITIAL_EXPENSES = [
   {
     id: 4,
     name: "Internet",
+    amount: undefined,
+    assignedTo: "foyer",
+    comments: "",
+  },
+  {
+    id: 5,
+    name: "Téléphone",
+    amount: undefined,
+    assignedTo: "foyer",
+    comments: "",
+  },
+  {
+    id: 6,
+    name: "Impôts",
+    amount: undefined,
+    assignedTo: "foyer",
+    comments: "",
+  },
+  {
+    id: 7,
+    name: "Assurance voiture",
+    amount: undefined,
+    assignedTo: "foyer",
+    comments: "",
+  },
+  {
+    id: 8,
+    name: "Assurance habitation",
+    amount: undefined,
+    assignedTo: "foyer",
+    comments: "",
+  },
+  {
+    id: 9,
+    name: "Courses (estimation)",
     amount: undefined,
     assignedTo: "foyer",
     comments: "",
@@ -79,7 +114,7 @@ export const INFO_TEXTS = {
   },
 
   BUDGET: {
-    description: `Cette section offre un récapitulatif détaillé de toutes les informations que vous avez saisies dans les autres rubriques. Elle affiche la contribution financière globale du foyer, ainsi que le détail pour chaque personne. Les montants affichés sont automatiquement ajustés en fonction du mode de répartition choisi et des données saisies, vous permettant d'avoir une vue d'ensemble précise des engagements financiers de chacun.`,
+    description: `Cette section offre un récapitulatif détaillé de toutes les informations que vous avez saisies dans les autres rubriques. Elle affiche la contribution financière globale du foyer, ainsi que le détail pour chaque personne. Les montants affichés sont automatiquement ajustés en fonction du mode de répartition choisi (lorsqu'il y a plusieurs personnes dans le foyer) et des données saisies, vous permettant d'avoir une vue d'ensemble précise des engagements financiers de chacun.`,
   },
 
   CHARTS: {

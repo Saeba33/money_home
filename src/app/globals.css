@@ -36,7 +36,7 @@ html {
 
 /* Section */
 .section-container {
-  @apply flex flex-col bg-white rounded-lg;
+  @apply flex flex-col bg-white rounded-xl;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .section-header-base {
@@ -77,10 +77,13 @@ html {
   @apply bg-blue-600 text-white font-medium px-4 py-2 rounded flex items-center shadow-lg ;
 }
 .add-button {
-  @apply w-full sm:w-auto font-medium bg-green-600 h-[38px] text-white border-none rounded-lg cursor-pointer py-1 px-2;
+  @apply w-full sm:w-auto font-medium bg-green-600 h-[38px] text-white border-none rounded cursor-pointer py-1 px-2;
+}
+.add-button-icon {
+  @apply text-green-600 text-xl h-[38px] w-[38px] flex items-center justify-center hover:text-green-700 transition-colors duration-200;
 }
 .delete-button {
-  @apply text-red-600 text-xl;
+  @apply text-red-600 text-xl h-[38px] w-[38px] flex items-center justify-center hover:text-red-700 transition-colors duration-200;
 }
 .cancel-button {
   @apply bg-gray-300 text-black px-4 py-2 rounded;
@@ -91,16 +94,21 @@ html {
 .reset-button {
   @apply bg-red-600 text-white font-medium px-4 py-2 rounded flex items-center shadow-lg ;
 }
-
-
+.option-button-selected {
+  @apply bg-blue-600 text-white px-3 py-1 rounded cursor-pointer;
+}
+.option-button-not-selected {
+    @apply bg-gray-200 text-black px-3 py-1 rounded cursor-pointer;
+}
 
 
 /* Inputs */
 .input {
   @apply border rounded text-black p-2 text-sm;
 }
+
 .select {
-  @apply border rounded text-black px-2 text-sm w-full sm:w-auto h-[38px];
+  @apply bg-white border rounded text-black px-2 text-sm md:w-auto h-[38px] cursor-pointer flex-shrink-0;
 }
 
 
@@ -112,5 +120,11 @@ html {
   @apply inline-block animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-500;
 }
 .warning {
-  @apply text-orange-600 text-sm;
+  @apply text-orange-600;
+}
+.positive-text {
+  @apply text-green-600;
+}
+.negative-text {
+  @apply text-red-600;
 }

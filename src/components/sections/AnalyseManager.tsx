@@ -109,42 +109,33 @@ const AnalyseManager: React.FC = () => {
       analysis +=
         "Il est crucial de revoir le budget pour équilibrer vos finances.\n\n";
     } else if (balance > 0) {
-      const targetSavings = totalIncome * 0.1;
-      const additionalSavingsNeeded = Math.max(0, targetSavings - totalSavings);
-
-      if (balance < 50) {
-        analysis += `Votre budget est équilibré, mais avec une marge très faible de ${balance.toFixed(
-          2
-        )} €. `;
-        if (savingsRate < 10) {
-          analysis += `Bien qu'il soit souhaitable d'épargner 10% de vos revenus, augmenter votre épargne actuelle pourrait déséquilibrer votre budget. Concentrez-vous d'abord sur la réduction de vos dépenses non essentielles.\n\n`;
-        } else {
-          analysis += `Restez vigilant et essayez de réduire vos dépenses non essentielles pour augmenter cette marge.\n\n`;
-        }
-      } else if (savingsRate >= 10) {
-        analysis += `Votre budget est bien équilibré avec une marge de ${balance.toFixed(
-          2
-        )} €, et vous épargnez déjà plus de 10% de vos revenus. C'est une excellente base, continuez ainsi!\n\n`;
+    const targetSavings = totalIncome * 0.1;
+    const currentSavings = totalSavings;
+    const additionalSavingsNeeded = Math.max(0, targetSavings - currentSavings);
+    
+    if (balance < 50) {
+      analysis += `Votre budget est équilibré, mais avec une marge très faible de ${balance.toFixed(2)} €. `;
+      if (savingsRate < 10) {
+        analysis += `Bien qu'il soit souhaitable d'épargner 10% de vos revenus, augmenter votre épargne actuelle pourrait déséquilibrer votre budget. Concentrez-vous d'abord sur la réduction de vos dépenses non essentielles.\n\n`;
       } else {
-        if (totalSavings === 0) {
-          analysis += `Vous avez une marge de ${balance.toFixed(
-            2
-          )} €. Vous pourriez envisager d'épargner ${targetSavings.toFixed(
-            2
-          )} € pour atteindre 10% de vos revenus, tout en gardant une balance positive.\n\n`;
-        } else if (additionalSavingsNeeded <= balance) {
-          analysis += `Vous avez une marge de ${balance.toFixed(
-            2
-          )} €. Vous pourriez envisager d'augmenter votre épargne de ${additionalSavingsNeeded.toFixed(
-            2
-          )} € pour atteindre 10% de vos revenus, tout en gardant une balance positive.\n\n`;
+        analysis += `Restez vigilant et essayez de réduire vos dépenses non essentielles pour augmenter cette marge.\n\n`;
+      }
+    } else if (savingsRate >= 10) {
+      analysis += `Votre budget est bien équilibré avec une marge de ${balance.toFixed(2)} €, et vous épargnez déjà plus de 10% de vos revenus. C'est une excellente base, continuez ainsi!\n\n`;
+    } else {
+      const possibleAdditionalSavings = Math.min(additionalSavingsNeeded, balance);
+      if (possibleAdditionalSavings > 0) {
+        analysis += `Vous avez une marge de ${balance.toFixed(2)} €. `;
+        if (possibleAdditionalSavings === additionalSavingsNeeded) {
+          analysis += `Vous pourriez envisager d'épargner ${possibleAdditionalSavings.toFixed(2)} € pour atteindre 10% de vos revenus, tout en gardant une balance positive.\n\n`;
         } else {
-          analysis += `Vous avez une marge de ${balance.toFixed(
-            2
-          )} €. Bien qu'il soit recommandé d'épargner 10% de vos revenus, augmenter votre épargne à ce niveau pourrait déséquilibrer votre budget. Essayez d'abord de réduire vos dépenses non essentielles.\n\n`;
+          analysis += `Vous pourriez envisager d'épargner ${possibleAdditionalSavings.toFixed(2)} € pour augmenter votre taux d'épargne, même si cela n'atteint pas tout à fait 10% de vos revenus.\n\n`;
         }
+      } else {
+        analysis += `Vous avez une marge de ${balance.toFixed(2)} €. Bien que votre taux d'épargne soit inférieur à 10%, votre marge actuelle ne permet pas d'augmenter significativement votre épargne. Concentrez-vous sur la réduction de vos dépenses non essentielles pour dégager plus de marge.\n\n`;
       }
     }
+  }
 
     // Conseils personnalisés
     if (totalOutflows > totalIncome * 0.9) {

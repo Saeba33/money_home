@@ -26,10 +26,10 @@ export const useIncome = () => {
   const addIncome = useCallback(() => {
     if (!draftIncome.name || draftIncome.amount === undefined) {
       const missingFields = [];
-      if (!draftIncome.name) missingFields.push("nom du revenu");
-      if (draftIncome.amount === undefined) missingFields.push("montant");
+      if (!draftIncome.name) missingFields.push("le nom du revenu");
+      if (draftIncome.amount === undefined) missingFields.push("un montant");
       showWarningNotification(
-        `Veuillez renseigner : ${missingFields.join(", ")}`
+        `Veuillez renseigner ${missingFields.join(" et ")}`
       );
       return;
     }

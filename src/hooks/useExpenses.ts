@@ -26,10 +26,10 @@ export const useExpenses = () => {
   const addExpense = useCallback(() => {
     if (!draftExpense.name || draftExpense.amount === undefined) {
       const missingFields = [];
-      if (!draftExpense.name) missingFields.push("nom de la dépense");
-      if (draftExpense.amount === undefined) missingFields.push("montant");
+      if (!draftExpense.name) missingFields.push("le nom de la dépense");
+      if (draftExpense.amount === undefined) missingFields.push("un montant");
       showWarningNotification(
-        `Veuillez renseigner : ${missingFields.join(", ")}`
+        `Veuillez renseigner ${missingFields.join(" et ")}`
       );
       return;
     }
