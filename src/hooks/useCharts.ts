@@ -8,7 +8,7 @@ import { ChartData, ChartOptions } from "chart.js";
 import { useMemo } from "react";
 
 export const useCharts = () => {
-  const { budgets, people, distributionMode, expenses, savings } =
+  const { budgets, people, distributionMode } =
     useAppContext();
 
   const shouldShowPieChart = useMemo(() => {

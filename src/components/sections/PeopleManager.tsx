@@ -85,10 +85,7 @@ const PeopleManager: React.FC = () => {
       const isPlaceholder = person.name === placeholderText;
 
       return (
-        <div
-          key={person.id}
-          className="section-field flex items-center space-x-2 mb-2"
-        >
+        <div key={person.id} className="flex items-center space-x-2 mb-2">
           <div className="relative flex-grow">
             <input
               type="text"
@@ -125,7 +122,7 @@ const PeopleManager: React.FC = () => {
               </div>
               <button
                 onClick={() => prepareDeletePerson(person)}
-                className="delete-button flex-shrink-0"
+                className="delete-button-icon-border-none flex-shrink-0"
                 aria-label="Supprimer la personne"
               >
                 <FaRegTrashCan className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -147,14 +144,16 @@ const PeopleManager: React.FC = () => {
       infoTextKey="PEOPLE"
       defaultOpenedSection={true}
     >
-      <div className="space-y-2">
+      <div className="flex flex-col w-full">
         {memoizedPeopleList}
         {percentageWarning && (
           <div className="warning py-2">{percentageWarning}</div>
         )}
-        <button onClick={addPerson} className="add-button w-full sm:w-auto">
-          Ajouter une personne
-        </button>
+        <div className="flex justify-start">
+          <button onClick={addPerson} className="add-button text-center">
+            Ajouter une personne
+          </button>
+        </div>
       </div>
       {personToDelete && (
         <DeletePersonModal
@@ -170,3 +169,4 @@ const PeopleManager: React.FC = () => {
 };
 
 export default PeopleManager;
+

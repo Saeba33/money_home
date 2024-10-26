@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
-    <footer className="bg-gray-800 text-white">
+    <footer className="footer">
       <div className="p-4 flex items-center justify-between">
         <p className="text-sm">
           &copy; {new Date().getFullYear()} - BEA

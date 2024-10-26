@@ -10,42 +10,20 @@ import {
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const NoDataMessage: React.FC = () => (
-  <p className="warning italic">Aucune donnée renseignée pour cette rubrique</p>
+  <p className="warning italic w-full">
+    Aucune donnée renseignée pour cette rubrique
+  </p>
 );
 
 const BudgetManager: React.FC = () => {
   const { budgets, people, expenses, savings, income } = useAppContext();
-  const [showPersonalBudgets, setShowPersonalBudgets] = useState(false);
   const [expandedBudgets, setExpandedBudgets] = useState<string[]>([]);
-  const [opacity, setOpacity] = useState(1);
-  const [detailOpacity, setDetailOpacity] = useState<{ [key: string]: number }>(
-    {}
-  );
-
-  const togglePersonalBudgets = () => {
-    setOpacity(0);
-    setTimeout(() => {
-      setShowPersonalBudgets(!showPersonalBudgets);
-      setOpacity(1);
-    }, 200);
-  };
 
   const toggleBudgetDetails = (name: string) => {
-    setDetailOpacity((prev) => ({ ...prev, [name]: 0 }));
-    setTimeout(() => {
-      setExpandedBudgets((prev) =>
-        prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
-      );
-      setDetailOpacity((prev) => ({ ...prev, [name]: 1 }));
-    }, 200);
+    setExpandedBudgets((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    );
   };
-
-  const getBalanceColor = (balance: number) =>
-    balance > 0
-      ? "positive-text"
-      : balance < 0
-      ? "negative-text"
-      : "text-black";
 
   const renderDetailedItems = (
     items: FinancialItem[],
@@ -53,19 +31,19 @@ const BudgetManager: React.FC = () => {
     percentage: number
   ) => {
     const filteredItems = items
-      .filter((item) => (item.amount || 0) > 0)
+      .filter((item) => (item.amount || 0) !== 0)
       .map((item) => {
         const amount = item.amount || 0;
         const personalAmount =
           item.assignedTo === "foyer" ? amount * (percentage / 100) : amount;
+
         return (
-          <div key={item.id} className="flex items-baseline">
-            <span className="mr-1">{item.name} :</span>
-            <span className="">
-              {personalAmount.toFixed(2)} €
+          <div key={item.id} className="flex items-center">
+            <span>
+              {item.name} : {personalAmount.toFixed(2)} €
               {item.assignedTo === "foyer" && people.length > 1 && (
-                <span className="text-sm text-gray-600 ml-1">
-                  ({percentage.toFixed(1)}% de {amount.toFixed(2)} €)
+                <span className="text-sm text-white/60 ml-2">
+                  (foyer - {percentage.toFixed(1)}% de {amount.toFixed(2)} €)
                 </span>
               )}
             </span>
@@ -76,177 +54,200 @@ const BudgetManager: React.FC = () => {
     return filteredItems.length > 0 ? filteredItems : <NoDataMessage />;
   };
 
-  const renderBudgetDetails = (budget: Budget) => (
-    <div
-      className="mt-4 transition-opacity duration-300 ease-in-out"
-      style={{ opacity: detailOpacity[budget.name] || 0 }}
-    >
-      {expandedBudgets.includes(budget.name) && (
-        <div className="space-y-4">
-          <div>
-            <h5 className="font-medium mb-2">Revenus</h5>
-            {renderDetailedItems(
-              income.filter(
-                (r) => r.assignedTo === budget.name || r.assignedTo === "foyer"
-              ),
-              budget.name,
-              budget.percentage
-            )}
-          </div>
-          <div>
-            <h5 className="font-medium mb-2">Épargne</h5>
-            {renderDetailedItems(
-              savings.filter(
-                (s) => s.assignedTo === budget.name || s.assignedTo === "foyer"
-              ),
-              budget.name,
-              budget.percentage
-            )}
-          </div>
-          <div>
-            <h5 className="font-medium mb-2">Dépenses</h5>
-            {renderDetailedItems(
-              expenses.filter(
-                (e) => e.assignedTo === budget.name || e.assignedTo === "foyer"
-              ),
-              budget.name,
-              budget.percentage
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <SectionHeader
       title="Budget"
       infoTextKey="BUDGET"
       defaultOpenedSection={true}
     >
-      {budgets.warning && <div className="warning">{budgets.warning}</div>}
-
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold">Résumé global</h3>
-          {people.length > 1 && budgets.budgets.length > 0 && (
-            <button
-              onClick={togglePersonalBudgets}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center"
-            >
-              {showPersonalBudgets ? "Voir moins" : "Voir plus"}
-              {showPersonalBudgets ? (
-                <FaChevronUp className="ml-2" />
-              ) : (
-                <FaChevronDown className="ml-2" />
-              )}
-            </button>
-          )}
+      {budgets.warning && (
+        <div className="warning mb-6 px-4 rounded-lg bg-orange-950/20">
+          {budgets.warning}
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 px-4 gap-x-4 gap-y-2">
-          {summaryKeys.map((key) => (
-            <div
-              key={key}
-              className={`flex text-balance items-baseline ${
-                key === "totalBalance"
-                  ? getBalanceColor(budgets.summary[key])
-                  : ""
-              }`}
-            >
-              <span className="mr-2">{summaryTranslations[key]} :</span>
-              <span className="font-medium">
-                {budgets.summary[key].toFixed(2)} €
+      )}
+
+      <div className="flex flex-col w-full gap-6">
+        <div className="border border-white/10 rounded-2xl p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-white/10 mb-4">
+            <div>
+              <h3 className="text-xl font-semibold">Résumé global</h3>
+            </div>
+            <div>
+              <span
+                className={`text-xl font-semibold px-3 py-1 rounded-md whitespace-nowrap ${
+                  budgets.summary.totalBalance > 0
+                    ? "amount-positive"
+                    : budgets.summary.totalBalance < 0
+                    ? "amount-negative"
+                    : "amount-neutral"
+                }`}
+              >
+                {budgets.summary.totalBalance > 0 ? "+" : ""}
+                {budgets.summary.totalBalance.toFixed(2)} €
               </span>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div
-        className="mt-4 transition-opacity duration-300 ease-in-out"
-        style={{ opacity: opacity }}
-      >
-        {people.length === 1 ? (
-          <div className="mb-4 px-4 rounded-lg">
-            <button
-              onClick={() => toggleBudgetDetails(budgets.budgets[0].name)}
-              className="details-button"
-            >
-              {expandedBudgets.includes(budgets.budgets[0].name) ? (
-                <>
-                  Masquer le détail <FaChevronUp className="ml-2" />
-                </>
-              ) : (
-                <>
-                  Afficher le détail <FaChevronDown className="ml-2" />
-                </>
-              )}
-            </button>
-            {renderBudgetDetails(budgets.budgets[0])}
           </div>
-        ) : (
-          showPersonalBudgets && (
-            <>
-              <h3 className="text-lg font-semibold mb-2 mt-6">
-                Répartition individuelle
-              </h3>
-              {budgets.budgets.map((budget: Budget) => (
+
+          <div className="flex flex-wrap gap-4">
+            {summaryKeys
+              .filter((key) => key !== "totalBalance")
+              .map((key) => (
                 <div
-                  key={budget.name}
-                  className="mb-4 p-4 bg-gray-100 rounded-lg"
+                  key={key}
+                  className="flex-1 basis-40 flex flex-col gap-2 p-3 bg-white/5 rounded-md"
                 >
-                  <h4 className="font-medium mb-2">
-                    {budget.name} ({budget.percentage.toFixed(1)}%)
-                  </h4>
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-2">
-                    {(Object.keys(budgetTranslations) as Array<keyof Budget>)
+                  <span className="text-sm text-white/60 overflow-hidden text-ellipsis">
+                    {summaryTranslations[key]}
+                  </span>
+                  <span>{budgets.summary[key].toFixed(2)} €</span>
+                </div>
+              ))}
+          </div>
+
+          {people.length === 1 && (
+            <div className="mb-4 rounded-lg">
+              <button
+                onClick={() => toggleBudgetDetails(budgets.budgets[0].name)}
+                className="details-button"
+              >
+                {expandedBudgets.includes(budgets.budgets[0].name) ? (
+                  <>
+                    Masquer le détail <FaChevronUp />
+                  </>
+                ) : (
+                  <>
+                    Afficher le détail <FaChevronDown />
+                  </>
+                )}
+              </button>
+
+              {expandedBudgets.includes(budgets.budgets[0].name) && (
+                <div className="mt-8 space-y-6 opacity-100 translate-y-0 transition-all duration-300">
+                  {[
+                    { title: "Revenus", items: income },
+                    { title: "Épargne", items: savings },
+                    { title: "Dépenses", items: expenses },
+                  ].map(({ title, items }) => (
+                    <div key={title}>
+                      <h5 className="text-lg font-medium mb-1">{title}</h5>
+                      <div>
+                        {renderDetailedItems(
+                          items.filter(
+                            (item) =>
+                              item.assignedTo === budgets.budgets[0].name ||
+                              item.assignedTo === "foyer"
+                          ),
+                          budgets.budgets[0].name,
+                          budgets.budgets[0].percentage
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {people.length > 1 && budgets.budgets.length > 0 && (
+          <div className="flex flex-col mt-12">
+            {budgets.budgets.map((budget: Budget, index) => (
+              <div
+                key={budget.name}
+                className={`border border-white/10 rounded-lg ${
+                  index > 0 ? "mt-6" : ""
+                }`}
+              >
+                <div className="p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-white/10 mb-4">
+                    <div>
+                      <h4 className="text-lg font-medium">{budget.name}</h4>
+                      <p className="text-sm text-white/60">
+                        participation à hauteur de{" "}
+                        {budget.percentage.toFixed(1)}%
+                      </p>
+                    </div>
+                    <div>
+                      <span
+                        className={`text-xl font-semibold px-3 py-1 rounded-md whitespace-nowrap ${
+                          budget.balance > 0
+                            ? "amount-positive"
+                            : budget.balance < 0
+                            ? "amount-negative"
+                            : "amount-neutral"
+                        }`}
+                      >
+                        {budget.balance > 0 ? "+" : ""}
+                        {budget.balance.toFixed(2)} €
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Object.entries(budget)
                       .filter(
-                        (key) =>
+                        ([key, value]) =>
                           key !== "name" &&
                           key !== "percentage" &&
-                          typeof budget[key] === "number" &&
-                          (people.length > 1 || !key.startsWith("foyer"))
+                          key !== "balance" &&
+                          typeof value === "number"
                       )
-                      .map((key) => (
+                      .map(([key, value]) => (
                         <div
                           key={key}
-                          className={`flex text-balance items-baseline ${
-                            key === "balance"
-                              ? getBalanceColor(budget[key] as number)
-                              : ""
-                          }`}
+                          className="flex flex-col gap-2 p-3 bg-white/5 rounded-md"
                         >
-                          <span className="mr-2">
-                            {budgetTranslations[key]} :
+                          <span className="text-sm text-white/60 overflow-hidden text-ellipsis">
+                            {budgetTranslations[key as keyof Budget]}
                           </span>
-                          <span className="font-medium">
-                            {typeof budget[key] === "number"
-                              ? (budget[key] as number).toFixed(2)
-                              : budget[key]}{" "}
-                            €
-                          </span>
+                          <span>{value.toFixed(2)} €</span>
                         </div>
                       ))}
                   </div>
+
                   <button
                     onClick={() => toggleBudgetDetails(budget.name)}
                     className="details-button"
                   >
                     {expandedBudgets.includes(budget.name) ? (
                       <>
-                        Masquer le détail <FaChevronUp className="ml-2" />
+                        Masquer le détail <FaChevronUp />
                       </>
                     ) : (
                       <>
-                        Afficher le détail <FaChevronDown className="ml-2" />
+                        Afficher le détail <FaChevronDown />
                       </>
                     )}
                   </button>
-                  {renderBudgetDetails(budget)}
+
+                  {expandedBudgets.includes(budget.name) && (
+                    <div className="mt-8 space-y-6 opacity-100 translate-y-0 transition-all duration-300">
+                      {[
+                        { title: "Revenus", items: income },
+                        { title: "Épargne", items: savings },
+                        { title: "Dépenses", items: expenses },
+                      ].map(({ title, items }) => (
+                        <div key={title}>
+                          <h5 className="text-lg font-medium mb-1">{title}</h5>
+                          <div>
+                            {renderDetailedItems(
+                              items.filter(
+                                (item) =>
+                                  item.assignedTo === budget.name ||
+                                  item.assignedTo === "foyer"
+                              ),
+                              budget.name,
+                              budget.percentage
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </>
-          )
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </SectionHeader>

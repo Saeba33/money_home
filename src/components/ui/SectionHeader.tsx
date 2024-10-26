@@ -15,7 +15,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const updateMaxHeight = () => {
+  const updateMaxHeight = React.useCallback(() => {
     if (contentRef.current) {
       if (isOpen) {
         contentRef.current.style.maxHeight = `${contentRef.current.scrollHeight}px`;
@@ -23,7 +23,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         contentRef.current.style.maxHeight = "0";
       }
     }
-  };
+  }, [isOpen]);
 
   useEffect(() => {
     updateMaxHeight();
@@ -37,7 +37,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isOpen, children]);
+  }, [isOpen, children, updateMaxHeight]);
 
   const toggleInfo = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -49,7 +49,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   };
 
   return (
-    <div className="section-container">
+    <div className={`section-container ${isOpen ? "open" : ""}`}>
       <div
         className={`section-header-${isOpen ? "open" : "closed"}`}
         onClick={toggleOpen}

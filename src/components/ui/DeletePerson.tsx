@@ -1,62 +1,57 @@
 import React from "react";
-import { DeletePersonModalProps } from "@/types/types";
+import { DeletePersonProps } from "@/types/types";
+import Modal from "@/components/ui/Modal";
 
-
-
-const DeletePersonModal: React.FC<DeletePersonModalProps> = ({
+const DeletePerson: React.FC<DeletePersonProps> = ({
   isOpen,
   onClose,
   person,
   financialItems,
   onConfirm,
 }) => {
-  if (!isOpen) return null;
-
   const hasFinancialData = financialItems.length > 0;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg max-w-lg mx-4 w-full">
-        <h2 className="text-xl font-bold mb-4">Supprimer {person.name}</h2>
-        {hasFinancialData ? (
-          <p className="text-orange-500 mb-4">
-            Attention, {person.name} possède des données financières affectées à
-            son nom. Vous pouvez supprimer cet utilisateur et toutes les données
-            qui y sont associées, ou supprimer cet utilisateur et réaffecter les
-            données au foyer. Si vous souhaitez modifier uniquement certaines
-            données, veuillez annuler et modifier les saisies que vous souhaitez
-            conserver.
-          </p>
-        ) : (
-          <p className="mb-4">
-            Souhaitez-vous supprimer {person.name} de votre foyer ?
-          </p>
-        )}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={onClose}
-            className="bg-gray-300 px-4 py-2 rounded mr-2"
-          >
+    <Modal
+      isOpen={isOpen}
+      title={`Supprimer ${person.name}`}
+      onClose={onClose}
+      footer={
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose} className="cancel-button">
             Annuler
           </button>
           <button
             onClick={() => onConfirm("delete")}
-            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+            className="reset-button"
           >
             {hasFinancialData ? "Tout supprimer" : "Supprimer"}
           </button>
           {hasFinancialData && (
             <button
               onClick={() => onConfirm("reassign")}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="standard-button"
             >
               Réaffecter au foyer
             </button>
           )}
         </div>
-      </div>
-    </div>
+      }
+    >
+      {hasFinancialData ? (
+        <p className="warning">
+          Attention, {person.name} possède des données financières affectées à
+          son nom. Vous pouvez supprimer cet utilisateur et toutes les données
+          qui y sont associées, ou supprimer cet utilisateur et réaffecter les
+          données au foyer. Si vous souhaitez modifier uniquement certaines
+          données, veuillez annuler et modifier les saisies que vous souhaitez
+          conserver.
+        </p>
+      ) : (
+        <p>Souhaitez-vous supprimer {person.name} de votre foyer ?</p>
+      )}
+    </Modal>
   );
 };
 
-export default DeletePersonModal;
+export default DeletePerson;

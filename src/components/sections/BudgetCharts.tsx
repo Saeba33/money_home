@@ -122,7 +122,7 @@ const BudgetCharts: React.FC = () => {
       defaultOpenedSection={false}
     >
       <div
-        className="budget-charts-container relative touch-pan-y"
+        className="budget-charts-container w-full relative touch-pan-y"
         ref={sliderRef}
         onMouseDown={handleDragStart}
         onMouseMove={handleDragMove}

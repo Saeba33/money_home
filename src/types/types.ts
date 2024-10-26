@@ -92,7 +92,7 @@ export interface PrivacyPolicyProps {
   onClose: () => void;
 }
 
-export interface DeletePersonModalProps {
+export interface DeletePersonProps {
   isOpen: boolean;
   onClose: () => void;
   person: Person;
@@ -100,6 +100,14 @@ export interface DeletePersonModalProps {
     type: "Dépense" | "Épargne" | "Revenu";
   })[];
   onConfirm: (action: "delete" | "reassign") => void;
+}
+
+export interface ModalProps {
+  isOpen: boolean;
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
 export interface ExportModalProps {

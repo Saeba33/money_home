@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaFileExport } from "react-icons/fa";
-import ExportModal from "./ExportModal";
+import ExportModal from "@/components/ui/ExportModal";
 import { useAppContext } from "@/contexts/AppContext";
 import { generatePDFReport } from "@/utils/pdfGenerator";
 
