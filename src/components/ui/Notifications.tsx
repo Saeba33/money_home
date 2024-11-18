@@ -3,7 +3,6 @@ import { toast, Toaster } from "sonner";
 const toastOptions = {
   position: "bottom-right" as const,
   richColors: true,
-  closeButton: true,
 };
 
 export const showSuccessNotification = (message: string) => {
@@ -27,7 +26,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <>
       {children}
-      <Toaster position="bottom-right" richColors closeButton />
+      <Toaster position="bottom-right" richColors />
     </>
   );
 };

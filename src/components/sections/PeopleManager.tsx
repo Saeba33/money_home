@@ -85,7 +85,7 @@ const PeopleManager: React.FC = () => {
       const isPlaceholder = person.name === placeholderText;
 
       return (
-        <div key={person.id} className="flex items-center space-x-2 mb-2">
+        <div key={person.id} className="flex items-center gap-4 mb-2">
           <div className="relative flex-grow">
             <input
               type="text"
