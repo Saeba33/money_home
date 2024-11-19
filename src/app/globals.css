@@ -8,8 +8,8 @@
 :root {
   --color-bg-primary: linear-gradient(
     to bottom right,
-    rgb(30 58 138 / 0.9),
-    rgb(49 46 129 / 0.9)
+    rgb(30 58 138 / 0.7),
+    rgb(49 46 129 / 0.5)
   );
   --color-bg-header-item: rgba(51, 65, 85, 0.2);
   --color-bg-section-header: rgba(79, 70, 229, 0.3);
@@ -440,18 +440,18 @@ body {
 
 .details-container {
   display: grid;
-  grid-template-rows: 0fr; /* Par défaut, caché */
+  grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows 0.3s ease; /* Animation fluide */
+  transition: grid-template-rows 0.3s ease;
 }
 
 .details-container.expanded {
-  grid-template-rows: 1fr; /* Développe le contenu */
+  grid-template-rows: 1fr;
 }
 
 .details-content {
   padding: 1rem;
-  background-color: #222; /* Exemple de style */
+  background-color: #222;
   color: white;
 }
 
