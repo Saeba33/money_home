@@ -9,7 +9,7 @@
   --color-bg-primary: linear-gradient(
     to bottom right,
     rgb(30 58 138 / 0.7),
-    rgb(49 46 129 / 0.5)
+    rgb(12 12 12 / 0.1)
   );
   --color-bg-header-item: rgba(51, 65, 85, 0.2);
   --color-bg-section-header: rgba(79, 70, 229, 0.3);
